@@ -5,7 +5,6 @@
 	"sideEffects": false,
 	"scripts": {
 		"dev": "remix dev",
-		"prod": "remix build & remix-serve build/index.js",
 		"build": "remix build",
 		"typecheck": "tsc"
 	},

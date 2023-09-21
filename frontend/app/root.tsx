@@ -25,7 +25,7 @@ const App = () => {
         <Links />
       </head>
       <body>
-        <h1>Playlink</h1>
+        <h1>Playlink!</h1>
         <Outlet />
         <Scripts />
       </body>
