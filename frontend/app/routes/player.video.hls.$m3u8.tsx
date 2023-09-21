@@ -10,8 +10,8 @@ const PageComponent = () => {
     const { m3u8 } = useLoaderData<typeof loader>();
 
     return <>
+        <h1>HLS Player</h1>
         {m3u8}
-        <h1>HLS</h1>
     </>;
 };
 
