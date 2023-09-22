@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
+import { createRef, useEffect, useState } from "react";
 
-import { useStorage } from "@plasmohq/storage/hook"
+import { useStorage } from "@plasmohq/storage/hook";
+import { BrowserQRCodeReader } from '@zxing/browser';
 
 
 const IndexPopup = () => {
@@ -18,10 +19,9 @@ const IndexPopup = () => {
 
   }, [m3u8, setManifests]);
 
-
   return (
     <div className="flex w-96 h-96">
-      <h1>Medias</h1>
+      <h1>Manifests</h1>
       <ul>
         {Array.from(manifests).map((manifest) => {
           return <li key={manifest}>{manifest}</li>
