@@ -8,9 +8,19 @@ interface GetDeviceCode extends RequestGenericInterface {
     Reply: { qr: string }
 }
 
-export interface DeviceCodeJwt { uuid: string, nonce: string };
+export interface DeviceCodeJwt { uuid: string };
 
 const route = async (fastify: FastifyInstance) => {
+
+    const getJwtValidity = (seconds: number) => {
+
+        const now = Date.now();
+
+        return {
+            from: now,
+            to: now + seconds * 1000
+        };
+    }
 
     fastify.get<GetDeviceCode>("/device/code", {}, async (request, response) => {
 
@@ -18,10 +28,13 @@ const route = async (fastify: FastifyInstance) => {
 
         if (device) {
 
-            const jwt = fastify.jwt.sign({
-                uuid: request.body.uuid,
-                nonce: device.nonce
-            } as DeviceCodeJwt);
+            const { from, to } = getJwtValidity(10);
+
+            const raw = {
+                uuid: request.body.uuid
+            } as DeviceCodeJwt;
+
+            const jwt = fastify.jwt.sign(raw, { notBefore: from, expiresIn: to });
 
             const qr = await QRCode.toString(jwt);
 

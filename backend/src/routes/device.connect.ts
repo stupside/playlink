@@ -3,14 +3,14 @@ import { FastifyInstance, RequestGenericInterface } from "fastify";
 
 import WebSocket from "ws";
 
-type Device = { nonce: string, socket: WebSocket };
+type Device = { socket: WebSocket };
 
-// TODO: https://www.npmjs.com/package/@fastify/request-context
+// TODO: https://github.com/fastify/fastify-awilix
 export const devices = new Map<string, Device>();
 
 interface ConnectDevice extends RequestGenericInterface {
     Headers: { id: string },
-    Body: { nonce: string },
+    Body: {},
 }
 
 const route = async (fastify: FastifyInstance) => {
@@ -25,15 +25,13 @@ const route = async (fastify: FastifyInstance) => {
                 // TODO: https://github.com/fastify/fastify-request-context
                 // TODO: https://github.com/fastify/fastify-secure-session
                 devices.set(uuid, {
-                    nonce: request.body.nonce,
                     socket: stream.socket,
                 });
             });
 
             stream.on("close", async () => {
-
                 devices.delete(uuid);
-            })
+            });
         });
 };
 

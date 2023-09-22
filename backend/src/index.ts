@@ -4,7 +4,9 @@ import AutoLoad from "@fastify/autoload";
 
 import path from "path";
 
-const server = fastify();
+const server = fastify({
+    logger: true,
+});
 
 server.register(AutoLoad, {
     dir: path.join(__dirname, 'plugins')
@@ -15,14 +17,12 @@ server.register(AutoLoad, {
     dirNameRoutePrefix: false
 });
 
-server.listen({}, (err, address) => {
+server.listen({}, (error) => {
 
-    if (err) {
+    if (error) {
 
-        console.error(err);
+        console.error(error);
 
         process.exit(1);
     }
-
-    console.log(`Started server at ${address}`);
 });

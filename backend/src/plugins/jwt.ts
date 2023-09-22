@@ -9,7 +9,7 @@ import jwt from "@fastify/jwt";
 const plugin = fp(async (fastify, _) => {
 
     await fastify.register(jwt, {
-        secret: "mysecret" // TODO: change secret
+        secret: "mysecret", // TODO: change secret
     });
 });
 

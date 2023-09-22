@@ -9,7 +9,7 @@ interface FeedDevice extends RequestGenericInterface {
 
 const route = async (fastify: FastifyInstance) => {
 
-    fastify.get<FeedDevice>("/device/feed", {}, async (request, response) => {
+    fastify.post<FeedDevice>("/device/feed", {}, async (request, response) => {
 
         const { jwt, m3u8 } = request.body;
 
@@ -17,7 +17,17 @@ const route = async (fastify: FastifyInstance) => {
 
         const device = devices.get(uuid);
 
-        device?.socket.send(m3u8);
+        if (device) {
+
+            device?.socket.send(JSON.stringify({
+                m3u8
+            }));
+
+            response.code(200);
+        }
+        else {
+            response.code(404);
+        }
     });
 };
 
