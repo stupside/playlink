@@ -1,7 +1,3 @@
-import { Http2ServerRequest } from "http2";
-
-export { }
-
 const pattern = /^(www:|http:|https:)\/\/(.*\.m3u8)/gm;
 
 chrome.webRequest.onBeforeSendHeaders.addListener(details => {
@@ -12,6 +8,9 @@ chrome.webRequest.onBeforeSendHeaders.addListener(details => {
             m3u8: details.url
         });
 
+        chrome.tabs.sendMessage(details.tabId, details.url);
+
+        /*
         fetch("/device/feed", {
             method: "POST",
             body: JSON.stringify({
@@ -19,6 +18,7 @@ chrome.webRequest.onBeforeSendHeaders.addListener(details => {
                 m3u8: details.url
             })
         }).then(console.log).catch(console.log);
+        */
     }
 
     return {
