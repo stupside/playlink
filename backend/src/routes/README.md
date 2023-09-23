@@ -1,8 +1,8 @@
 # /device/connect
 Connect the tv with a socket. The tv is waiting to be feed.
 
-# /device/code
-Retrieve a numeric code and a qr code to identify the device.
+# /device/host
+Become an host. The route returns a QR code, a Session.Id and a csrf token to be feed.
 
 # /device/feed
-Send an m3u8
+Send something to be played by the host.

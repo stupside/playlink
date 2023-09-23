@@ -1,37 +1,63 @@
-import { randomUUID } from "crypto";
+
 import { FastifyInstance, RequestGenericInterface } from "fastify";
 
-import WebSocket from "ws";
+import { createHmac } from "node:crypto";
 
-type Device = { socket: WebSocket };
+import WebSocket from "ws";
+import prisma from "../utils/prisma";
+
+type Session = { socket: WebSocket };
 
 // TODO: https://github.com/fastify/fastify-awilix
-export const devices = new Map<string, Device>();
+export const connections = new Map<number, Session>();
 
-interface ConnectDevice extends RequestGenericInterface {
-    Headers: { id: string },
-    Body: {},
+interface Connect extends RequestGenericInterface {
+    Body: {
+        session: number,
+        password: string,
+    },
 }
 
 const route = async (fastify: FastifyInstance) => {
 
-    fastify.post<ConnectDevice>("/device/connect", { websocket: true },
+    fastify.get<Connect>("/device/connect", { websocket: true, onRequest: fastify.csrfProtection },
         async (stream, request) => {
 
-            const uuid = randomUUID();
+            const session = await prisma.session.findUnique({ where: { id: request.body.session } });
 
-            stream.on("open", async () => {
+            if (session) {
 
-                // TODO: https://github.com/fastify/fastify-request-context
-                // TODO: https://github.com/fastify/fastify-secure-session
-                devices.set(uuid, {
-                    socket: stream.socket,
-                });
-            });
+                const md5 = createHmac("md5", "secret"); // TODO: hardcoded
 
-            stream.on("close", async () => {
-                devices.delete(uuid);
-            });
+                const hash = request.body.password;
+
+                md5.update(hash);
+
+                if (hash == session.password) {
+
+                    stream.on("open", async () => {
+
+                        // TODO: https://github.com/fastify/fastify-request-context
+                        // TODO: https://github.com/fastify/fastify-secure-session
+
+                        connections.set(session?.id, {
+                            socket: stream.socket,
+                        });
+                    });
+
+                    stream.on("close", async () => {
+
+                        connections.delete(session.id);
+                    });
+                }
+                else {
+                    stream.socket.close();
+                }
+            }
+            else {
+                stream.socket.close();
+            }
+
         });
 };
 

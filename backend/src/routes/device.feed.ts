@@ -1,32 +1,50 @@
 import { FastifyInstance, RequestGenericInterface } from "fastify";
 
-import { devices } from "./device.connect";
-import { DeviceCodeJwt } from "./device.code";
+import { connections as clients } from "./device.connect";
+import { SessionCodeJwt } from "./device.host";
+import prisma from "../utils/prisma";
 
-interface FeedDevice extends RequestGenericInterface {
-    Body: { jwt: string, m3u8: string },
+interface Feed extends RequestGenericInterface {
+    Body: { token: string, m3u8: string },
 }
 
 const route = async (fastify: FastifyInstance) => {
 
-    fastify.post<FeedDevice>("/device/feed", {}, async (request, response) => {
+    fastify.post<Feed>("/device/feed", {}, async (request, response) => {
 
-        const { jwt, m3u8 } = request.body;
+        const { token, m3u8 } = request.body;
 
-        const { uuid } = fastify.jwt.verify<DeviceCodeJwt>(jwt);
+        const jwt = fastify.jwt.verify<SessionCodeJwt>(token);
 
-        const device = devices.get(uuid);
+        const session = await prisma.session.findUnique({
+            where: {
+                id: jwt.session
+            }
+        });
 
-        if (device) {
+        if (session) {
 
-            device?.socket.send(JSON.stringify({
-                m3u8
-            }));
+            await prisma.link.create({
+                data: {
+                    type: "m3u8",
+                    url: m3u8,
+                    sessionId: session.id
+                }
+            });
 
-            response.code(200);
-        }
-        else {
-            response.code(404);
+            const client = clients.get(session.id);
+
+            if (client) {
+
+                client?.socket.send(JSON.stringify({
+                    m3u8
+                }));
+
+                response.code(200);
+            }
+            else {
+                response.code(404);
+            }
         }
     });
 };

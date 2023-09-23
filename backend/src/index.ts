@@ -1,28 +1,35 @@
 import fastify from 'fastify';
 
+import { PrismaClient } from '@prisma/client'
+
 import AutoLoad from "@fastify/autoload";
 
 import path from "path";
 
-const server = fastify({
-    logger: true,
-});
+const main = async () => {
 
-server.register(AutoLoad, {
-    dir: path.join(__dirname, 'plugins')
-});
+    const server = fastify({
+        logger: true,
+    });
 
-server.register(AutoLoad, {
-    dir: path.join(__dirname, 'routes'),
-    dirNameRoutePrefix: false
-});
+    server.register(AutoLoad, {
+        dir: path.join(__dirname, 'plugins')
+    });
 
-server.listen({}, (error) => {
+    server.register(AutoLoad, {
+        dir: path.join(__dirname, 'routes'),
+        dirNameRoutePrefix: false
+    });
 
-    if (error) {
+    server.listen({
+        port: 3000 // TODO: hardcorded
+    }, (error) => {
 
-        console.error(error);
+        if (error) {
 
-        process.exit(1);
-    }
-});
+            console.error(error);
+        }
+    });
+};
+
+main();
