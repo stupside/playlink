@@ -1,0 +1,31 @@
+services:
+
+  playlink-database:
+    image: postgres
+    hostname: database.playlink
+    container_name: database
+    restart: always
+    environment:
+      POSTGRES_USER: "playlink"
+      POSTGRES_PASSWORD: "playlink"
+    ports:
+      - "5432:5432"
+  
+  playlink-database-admin:
+    image: dpage/pgadmin4
+    hostname: admin.database.playlink
+    container_name: database-admin
+    restart: always
+    depends_on:
+      - playlink-database
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "playlink@playlink.com"
+      PGADMIN_DEFAULT_PASSWORD: "playlink"
+    ports:
+      - "2345:80"
+
+
+networks:
+  default:
+    name: playlink
+    driver: bridge 

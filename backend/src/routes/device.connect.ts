@@ -33,7 +33,7 @@ const route = async (fastify: FastifyInstance) => {
 
                 md5.update(hash);
 
-                if (hash == session.password) {
+                if (hash === session.password) {
 
                     stream.on("open", async () => {
 
@@ -51,11 +51,11 @@ const route = async (fastify: FastifyInstance) => {
                     });
                 }
                 else {
-                    stream.socket.close();
+                    stream.socket.close(403, "You are not authorize to connect");
                 }
             }
             else {
-                stream.socket.close();
+                stream.socket.close(404, "Session not found");
             }
 
         });

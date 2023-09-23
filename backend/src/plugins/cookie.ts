@@ -9,7 +9,7 @@ import cookie from "@fastify/cookie";
 const plugin = fp(async (fastify, _) => {
 
     await fastify.register(cookie, {
-        secret: "somesecret"
+        secret: "bGoa+V7g/yqDXvKRqq+JTFn4uQZbPiQJo4pf9RzJ",
     });
 });
 

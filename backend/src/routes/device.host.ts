@@ -21,7 +21,7 @@ const route = async (fastify: FastifyInstance) => {
         const ip = request.ip;
         const agent = request.headers["user-agent"];
 
-        const { from, to } = getJwtValidity(10);
+        const { from, to } = getJwtValidity(120);
 
         const md5 = createHmac("md5", "secret"); // TODO: hardcoded
 
@@ -43,12 +43,14 @@ const route = async (fastify: FastifyInstance) => {
 
         const jwt = fastify.jwt.sign(raw, { notBefore: from, expiresIn: to });
 
-        const qr = await QRCode.toString(jwt);
+        const qr = await QRCode.toDataURL(jwt);
+
+        const csrf = response.generateCsrf();
 
         await response.code(200).send({
             qr,
             session: session.id,
-            token: response.generateCsrf()
+            token: csrf,
         });
     });
 };

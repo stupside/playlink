@@ -13,7 +13,13 @@ const plugin = fp(async (fastify, _) => {
         cookieOpts: {
             signed: true,
         },
-        csrfOpts: { hmacKey: 'somekey' }
+        csrfOpts: { hmacKey: 'bGoa+V7g/yqDXvKRqq+JTFn4uQZbPiQJo4pf9RzJ' },
+        getToken: (req) => {
+            const value = req.headers['csrf-token'];
+
+            if (value instanceof Array) return;
+            else return value;
+        }
     });
 });
 
