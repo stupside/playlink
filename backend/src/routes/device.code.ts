@@ -38,11 +38,12 @@ const route = async (fastify: FastifyInstance) => {
 
             const qr = await QRCode.toString(jwt);
 
-            // TODO: https://github.com/fastify/fastify-jwt
-            await response.send({
+            await response.code(200).send({
                 qr
             });
         }
+
+        await response.code(404);
     });
 };
 
