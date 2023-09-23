@@ -12,7 +12,7 @@ type Session = { socket: WebSocket };
 export const connections = new Map<number, Session>();
 
 interface Connect extends RequestGenericInterface {
-    Body: {
+    Querystring: {
         session: number,
         password: string,
     },
@@ -23,13 +23,13 @@ const route = async (fastify: FastifyInstance) => {
     fastify.get<Connect>("/device/connect", { websocket: true, onRequest: fastify.csrfProtection },
         async (stream, request) => {
 
-            const session = await prisma.session.findUnique({ where: { id: request.body.session } });
+            const session = await prisma.session.findUnique({ where: { id: request.query.session } });
 
             if (session) {
 
                 const md5 = createHmac("md5", "secret"); // TODO: hardcoded
 
-                const hash = request.body.password;
+                const hash = request.query.password;
 
                 md5.update(hash);
 
