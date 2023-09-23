@@ -9,7 +9,7 @@
   "scripts": {
     "dev": "ts-node src/index.ts",
     "build": "tsc -p tsconfig.json",
-    "prd": "node build/index.js"
+    "prod": "node build/index.js"
   },
   "keywords": [],
   "author": "",
