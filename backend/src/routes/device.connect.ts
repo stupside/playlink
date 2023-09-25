@@ -20,7 +20,7 @@ interface Connect extends RequestGenericInterface {
 
 const route = async (fastify: FastifyInstance) => {
 
-    fastify.get<Connect>("/device/connect", { websocket: true, onRequest: fastify.csrfProtection },
+    fastify.get<Connect>("/device/connect", { websocket: true, /* TODO: onRequest: fastify.csrfProtection */ },
         async (stream, request) => {
 
             const session = await prisma.session.findUnique({ where: { id: request.query.session } });

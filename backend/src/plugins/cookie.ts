@@ -10,6 +10,7 @@ const plugin = fp(async (fastify, _) => {
 
     await fastify.register(cookie, {
         secret: "bGoa+V7g/yqDXvKRqq+JTFn4uQZbPiQJo4pf9RzJ",
+        
     });
 });
 

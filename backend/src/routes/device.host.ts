@@ -8,7 +8,7 @@ import prisma from "../utils/prisma";
 import { getJwtValidity } from "../utils/jwt";
 
 interface Host extends RequestGenericInterface {
-    Reply: { qr: string, session: number, token: string }
+    Reply: { qr: string, session: number, /* token: string */ }
     Body: { password: string }
 }
 
@@ -45,12 +45,12 @@ const route = async (fastify: FastifyInstance) => {
 
         const qr = await QRCode.toDataURL(jwt);
 
-        const csrf = response.generateCsrf();
+        // TODO: const csrf = response.generateCsrf();
 
         await response.code(200).send({
             qr,
-            session: session.id,
-            token: csrf,
+            session: session.id
+            // token: csrf,
         });
     });
 };
