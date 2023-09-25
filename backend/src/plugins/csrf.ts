@@ -8,7 +8,6 @@ import csrf from "@fastify/csrf-protection";
  */
 const plugin = fp(async (fastify, _) => {
 
-    /* TODO: breaks
     await fastify.register(csrf, {
         sessionPlugin: "@fastify/cookie",
         cookieOpts: {
@@ -17,7 +16,6 @@ const plugin = fp(async (fastify, _) => {
         },
         csrfOpts: { hmacKey: 'bGoa+V7g/yqDXvKRqq+JTFn4uQZbPiQJo4pf9RzJ' }
     });
-    */
 });
 
 export default plugin;

@@ -1,6 +1,8 @@
 
 import { FastifyInstance, RequestGenericInterface } from "fastify";
 
+import { Static, Type } from '@sinclair/typebox'
+
 import { createHmac } from "node:crypto";
 
 import WebSocket from "ws";
@@ -11,16 +13,24 @@ type Session = { socket: WebSocket };
 // TODO: https://github.com/fastify/fastify-awilix
 export const connections = new Map<number, Session>();
 
+export const QueryString = Type.Object({
+    session: Type.Number(),
+    password: Type.String(),
+})
+
+type QueryStringType = Static<typeof QueryString>;
+
 interface Connect extends RequestGenericInterface {
-    Querystring: {
-        session: number,
-        password: string,
-    },
+    Querystring: QueryStringType,
 }
 
 const route = async (fastify: FastifyInstance) => {
 
-    fastify.get<Connect>("/device/connect", { websocket: true, /* TODO: onRequest: fastify.csrfProtection */ },
+    fastify.get<Connect>("/device/connect", {
+        websocket: true, schema: {
+            querystring: QueryString
+        } /* TODO: onRequest: fastify.csrfProtection */
+    },
         async (stream, request) => {
 
             const session = await prisma.session.findUnique({ where: { id: request.query.session } });
@@ -51,7 +61,7 @@ const route = async (fastify: FastifyInstance) => {
                     });
                 }
                 else {
-                    stream.socket.close(403, "You are not authorize to connect");
+                    stream.socket.close(403, "You are not authorized to connect");
                 }
             }
             else {

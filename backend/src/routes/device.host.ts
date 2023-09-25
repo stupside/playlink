@@ -1,15 +1,22 @@
 import { FastifyInstance, RequestGenericInterface } from "fastify";
 
+import { Static, Type } from "@sinclair/typebox";
+
 import { createHmac } from "node:crypto";
 
 import QRCode from "qrcode";
 
 import prisma from "../utils/prisma";
-import { getJwtValidity } from "../utils/jwt";
+
+const Body = Type.Object({ password: Type.String() });
+const Reply = Type.Object({ qr: Type.String(), session: Type.Number(), token: Type.String() });
+
+type BodyType = Static<typeof Body>;
+type ReplyType = Static<typeof Reply>;
 
 interface Host extends RequestGenericInterface {
-    Reply: { qr: string, session: number, /* token: string */ }
-    Body: { password: string }
+    Body: BodyType,
+    Reply: ReplyType
 }
 
 export interface SessionCodeJwt { session: number };
@@ -20,8 +27,6 @@ const route = async (fastify: FastifyInstance) => {
 
         const ip = request.ip;
         const agent = request.headers["user-agent"];
-
-        const { from, to } = getJwtValidity(120);
 
         const md5 = createHmac("md5", "secret"); // TODO: hardcoded
 
@@ -41,16 +46,16 @@ const route = async (fastify: FastifyInstance) => {
             session: session.id
         } as SessionCodeJwt;
 
-        const jwt = fastify.jwt.sign(raw, { notBefore: from, expiresIn: to });
+        const jwt = fastify.jwt.sign(raw, { notBefore: Date.now(), expiresIn: 120 * 1000 });
 
         const qr = await QRCode.toDataURL(jwt);
 
-        // TODO: const csrf = response.generateCsrf();
+        const csrf = response.generateCsrf();
 
         await response.code(200).send({
             qr,
-            session: session.id
-            // token: csrf,
+            session: session.id,
+            token: csrf,
         });
     });
 };

@@ -1,7 +1,13 @@
+import { Static, Type } from "@sinclair/typebox";
 import { FastifyInstance, RequestGenericInterface } from "fastify";
 
+
+const Body = Type.Object({ name: Type.String() });
+
+type BodyType = Static<typeof Body>;
+
 interface Hello extends RequestGenericInterface {
-    Body: { name: string }
+    Body: BodyType,
 }
 
 const route = async (fastify: FastifyInstance) => {

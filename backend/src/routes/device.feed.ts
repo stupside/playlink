@@ -3,9 +3,14 @@ import { FastifyInstance, RequestGenericInterface } from "fastify";
 import { connections as clients } from "./device.connect";
 import { SessionCodeJwt } from "./device.host";
 import prisma from "../utils/prisma";
+import { Static, Type } from "@sinclair/typebox";
+
+const Body = Type.Object({ token: Type.String(), m3u8: Type.String() });
+
+type BodyType = Static<typeof Body>;
 
 interface Feed extends RequestGenericInterface {
-    Body: { token: string, m3u8: string },
+    Body: BodyType,
 }
 
 const route = async (fastify: FastifyInstance) => {
@@ -40,11 +45,14 @@ const route = async (fastify: FastifyInstance) => {
                     m3u8
                 }));
 
-                response.code(200);
+                response.code(200).send("Client feed");
             }
             else {
-                response.code(404);
+                response.code(404).send("Client not found");
             }
+        }
+        else {
+            response.code(404).send("Session not found");
         }
     });
 };

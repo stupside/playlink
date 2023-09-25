@@ -8,6 +8,8 @@ import path from "path";
 
 const main = async () => {
 
+    process.env.TZ = "Etc/UTC";
+
     const server = fastify({
         logger: true,
     });
