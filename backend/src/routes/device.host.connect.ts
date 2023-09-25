@@ -15,7 +15,6 @@ export const connections = new Map<number, Session>();
 
 export const QueryString = Type.Object({
     session: Type.Number(),
-    password: Type.String(),
 })
 
 type QueryStringType = Static<typeof QueryString>;
@@ -26,7 +25,7 @@ interface Connect extends RequestGenericInterface {
 
 const route = async (fastify: FastifyInstance) => {
 
-    fastify.get<Connect>("/device/connect", {
+    fastify.get<Connect>("/device/host/connect", {
         websocket: true, schema: {
             querystring: QueryString
         } /* TODO: onRequest: fastify.csrfProtection */
@@ -37,32 +36,19 @@ const route = async (fastify: FastifyInstance) => {
 
             if (session) {
 
-                const md5 = createHmac("md5", "secret"); // TODO: hardcoded
+                stream.on("open", async () => {
 
-                const hash = request.query.password;
+                    // TODO: https://github.com/fastify/fastify-secure-session
 
-                md5.update(hash);
-
-                if (hash === session.password) {
-
-                    stream.on("open", async () => {
-
-                        // TODO: https://github.com/fastify/fastify-request-context
-                        // TODO: https://github.com/fastify/fastify-secure-session
-
-                        connections.set(session?.id, {
-                            socket: stream.socket,
-                        });
+                    connections.set(session?.id, {
+                        socket: stream.socket,
                     });
+                });
 
-                    stream.on("close", async () => {
+                stream.on("close", async () => {
 
-                        connections.delete(session.id);
-                    });
-                }
-                else {
-                    stream.socket.close(403, "You are not authorized to connect");
-                }
+                    connections.delete(session.id);
+                });
             }
             else {
                 stream.socket.close(404, "Session not found");

@@ -8,8 +8,8 @@ import QRCode from "qrcode";
 
 import prisma from "../utils/prisma";
 
-const Body = Type.Object({ session: Type.Number(), password: Type.String() });
-const Reply = Type.Object({ qr: Type.String() });
+const Body = Type.Object({ session: Type.Number() });
+const Reply = Type.Object({ qr: Type.String(), token: Type.String() });
 
 type BodyType = Static<typeof Body>;
 type ReplyType = Static<typeof Reply>;
@@ -23,7 +23,7 @@ export interface SessionCodeJwt { session: number };
 
 const route = async (fastify: FastifyInstance) => {
 
-    fastify.post<Code>("/device/code", {}, async (request, response) => {
+    fastify.post<Code>("/device/host/code", {}, async (request, response) => {
 
         const session = await prisma.session.findUnique({
             where: {
@@ -32,12 +32,6 @@ const route = async (fastify: FastifyInstance) => {
         });
 
         if (session) {
-
-            const md5 = createHmac("md5", "secret");
-
-            const hash = request.body.password;
-
-            md5.update(hash);
 
             const raw = {
                 session: session.id
@@ -48,12 +42,13 @@ const route = async (fastify: FastifyInstance) => {
             const qr = await QRCode.toDataURL(jwt);
 
             await response.code(200).send({
-                qr
+                qr,
+                token: jwt
             });
         }
         else {
 
-            response.code(403);
+            response.code(404);
         }
     });
 };

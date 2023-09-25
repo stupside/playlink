@@ -16,8 +16,6 @@ model Session {
   ip String
   agent String?
 
-  password String
-
   links Link[]
 }
 

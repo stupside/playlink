@@ -1,6 +1,6 @@
 import { FastifyInstance, RequestGenericInterface } from "fastify";
 
-import { connections as clients } from "./device.connect";
+import { connections as clients } from "./device.host.connect";
 import { SessionCodeJwt } from "./device.host";
 import prisma from "../utils/prisma";
 import { Static, Type } from "@sinclair/typebox";
