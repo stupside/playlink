@@ -3,10 +3,8 @@ import { FastifyInstance, RequestGenericInterface } from "fastify";
 
 import { Static, Type } from '@sinclair/typebox'
 
-import { createHmac } from "node:crypto";
-
 import WebSocket from "ws";
-import prisma from "../utils/prisma";
+import prisma from "../../utils/prisma";
 
 type Session = { socket: WebSocket };
 
@@ -14,8 +12,8 @@ type Session = { socket: WebSocket };
 export const connections = new Map<number, Session>();
 
 export const QueryString = Type.Object({
-    session: Type.Number(),
-})
+    session: Type.Number()
+});
 
 type QueryStringType = Static<typeof QueryString>;
 
@@ -25,10 +23,10 @@ interface Connect extends RequestGenericInterface {
 
 const route = async (fastify: FastifyInstance) => {
 
-    fastify.get<Connect>("/device/host/connect", {
+    fastify.get<Connect>("/connect", {
         websocket: true, schema: {
             querystring: QueryString
-        } /* TODO: onRequest: fastify.csrfProtection */
+        }
     },
         async (stream, request) => {
 
@@ -37,8 +35,6 @@ const route = async (fastify: FastifyInstance) => {
             if (session) {
 
                 stream.on("open", async () => {
-
-                    // TODO: https://github.com/fastify/fastify-secure-session
 
                     connections.set(session?.id, {
                         socket: stream.socket,

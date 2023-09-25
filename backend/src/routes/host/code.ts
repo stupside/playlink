@@ -2,11 +2,9 @@ import { FastifyInstance, RequestGenericInterface } from "fastify";
 
 import { Static, Type } from "@sinclair/typebox";
 
-import { createHmac } from "node:crypto";
-
 import QRCode from "qrcode";
 
-import prisma from "../utils/prisma";
+import prisma from "../../utils/prisma";
 
 const Body = Type.Object({ session: Type.Number() });
 const Reply = Type.Object({ qr: Type.String(), token: Type.String() });
@@ -23,7 +21,7 @@ export interface SessionCodeJwt { session: number };
 
 const route = async (fastify: FastifyInstance) => {
 
-    fastify.post<Code>("/device/host/code", {}, async (request, response) => {
+    fastify.post<Code>("/code", {}, async (request, response) => {
 
         const session = await prisma.session.findUnique({
             where: {

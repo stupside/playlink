@@ -1,10 +1,9 @@
 import { FastifyInstance, RequestGenericInterface } from "fastify";
 
 import { Static, Type } from "@sinclair/typebox";
+import prisma from "../../utils/prisma";
 
-import prisma from "../utils/prisma";
-
-const Body = Type.Object({  });
+const Body = Type.Object({});
 const Reply = Type.Object({ session: Type.Number() });
 
 type BodyType = Static<typeof Body>;
@@ -19,7 +18,7 @@ export interface SessionCodeJwt { session: number };
 
 const route = async (fastify: FastifyInstance) => {
 
-    fastify.post<Host>("/device/host", {}, async (request, response) => {
+    fastify.post<Host>("/", {}, async (request, response) => {
 
         const ip = request.ip;
         const agent = request.headers["user-agent"];
@@ -31,6 +30,7 @@ const route = async (fastify: FastifyInstance) => {
             }
         });
 
+        // TODO: secured session
         await response.code(200).send({
             session: session.id
         });

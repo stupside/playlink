@@ -1,7 +1,5 @@
 import fastify from 'fastify';
 
-import { PrismaClient } from '@prisma/client'
-
 import AutoLoad from "@fastify/autoload";
 
 import path from "path";

@@ -1,9 +1,11 @@
 import { FastifyInstance, RequestGenericInterface } from "fastify";
 
-import { connections as clients } from "./device.host.connect";
-import { SessionCodeJwt } from "./device.host";
-import prisma from "../utils/prisma";
 import { Static, Type } from "@sinclair/typebox";
+
+import prisma from "../../utils/prisma";
+
+import { SessionCodeJwt } from "./code";
+import { connections } from "./connect";
 
 const Body = Type.Object({ token: Type.String(), m3u8: Type.String() });
 
@@ -15,7 +17,7 @@ interface Feed extends RequestGenericInterface {
 
 const route = async (fastify: FastifyInstance) => {
 
-    fastify.post<Feed>("/device/feed", {}, async (request, response) => {
+    fastify.post<Feed>("/feed", {}, async (request, response) => {
 
         const { token, m3u8 } = request.body;
 
@@ -37,11 +39,11 @@ const route = async (fastify: FastifyInstance) => {
                 }
             });
 
-            const client = clients.get(session.id);
+            const connection = connections.get(session.id);
 
-            if (client) {
+            if (connection) {
 
-                client?.socket.send(JSON.stringify({
+                connection?.socket.send(JSON.stringify({
                     m3u8
                 }));
 
