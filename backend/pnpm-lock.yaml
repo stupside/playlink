@@ -20,9 +20,6 @@ dependencies:
   '@fastify/type-provider-typebox':
     specifier: ^3.5.0
     version: 3.5.0(@sinclair/typebox@0.31.16)
-  '@fastify/websocket':
-    specifier: ^8.2.0
-    version: 8.2.0
   '@sinclair/typebox':
     specifier: ^0.31.16
     version: 0.31.16
@@ -336,16 +333,6 @@ packages:
       '@sinclair/typebox': '>=0.26 <=0.31'
     dependencies:
       '@sinclair/typebox': 0.31.16
-    dev: false
-
-  /@fastify/websocket@8.2.0:
-    resolution: {integrity: sha512-B4tlHFBKCX7tenEG9aUcQEpksW2e0+dgRTaH/05+cro1Xsq1+kSj+9IB9Gep7a0KbHZGrat+zBsOas6lRs5dFQ==}
-    dependencies:
-      fastify-plugin: 4.5.1
-      ws: 8.14.2
-    transitivePeerDependencies:
-      - bufferutil
-      - utf-8-validate
     dev: false
 
   /@istanbuljs/load-nyc-config@1.1.0:
@@ -2331,19 +2318,6 @@ packages:
       signal-exit: 3.0.7
       typedarray-to-buffer: 3.1.5
     dev: true
-
-  /ws@8.14.2:
-    resolution: {integrity: sha512-wEBG1ftX4jcglPxgFCMJmZ2PLtSbJ2Peg6TmpJFTbe9GZYOQCDPdMYu/Tm0/bGZkw8paZnJY45J4K2PZrLYq8g==}
-    engines: {node: '>=10.0.0'}
-    peerDependencies:
-      bufferutil: ^4.0.1
-      utf-8-validate: '>=5.0.2'
-    peerDependenciesMeta:
-      bufferutil:
-        optional: true
-      utf-8-validate:
-        optional: true
-    dev: false
 
   /xtend@4.0.2:
     resolution: {integrity: sha512-LKYU1iAXJXUgAXn9URjiu+MWhyUXHsvfp7mcuYm9dSUKK0/CjtrUwFAxD82/mCWbtLsGjFIad0wIsod4zrTAEQ==}

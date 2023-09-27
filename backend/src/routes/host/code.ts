@@ -6,7 +6,7 @@ import QRCode from "qrcode";
 
 import prisma from "../../utils/prisma";
 
-const Body = Type.Object({ session: Type.Number() });
+const Body = Type.Object({ session: Type.Number(), expiry: Type.Number({ default: 120 }) });
 const Reply = Type.Object({ qr: Type.String(), token: Type.String() });
 
 type BodyType = Static<typeof Body>;
@@ -21,7 +21,7 @@ export interface SessionCodeJwt { session: number };
 
 const route = async (fastify: FastifyInstance) => {
 
-    fastify.post<Code>("/code", {}, async (request, response) => {
+    fastify.post<Code>("/host/code", {}, async (request, response) => {
 
         const session = await prisma.session.findUnique({
             where: {
@@ -35,7 +35,7 @@ const route = async (fastify: FastifyInstance) => {
                 session: session.id
             } as SessionCodeJwt;
 
-            const jwt = fastify.jwt.sign(raw, { notBefore: Date.now(), expiresIn: 120 * 1000 });
+            const jwt = fastify.jwt.sign(raw, { notBefore: Date.now(), expiresIn: request.body.expiry * 1000 });
 
             const qr = await QRCode.toDataURL(jwt);
 

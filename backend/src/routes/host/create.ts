@@ -18,7 +18,7 @@ export interface SessionCodeJwt { session: number };
 
 const route = async (fastify: FastifyInstance) => {
 
-    fastify.post<Host>("/", {}, async (request, response) => {
+    fastify.post<Host>("/host", {}, async (request, response) => {
 
         const ip = request.ip;
         const agent = request.headers["user-agent"];
@@ -30,7 +30,6 @@ const route = async (fastify: FastifyInstance) => {
             }
         });
 
-        // TODO: secured session
         await response.code(200).send({
             session: session.id
         });

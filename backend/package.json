@@ -20,7 +20,6 @@
     "@fastify/jwt": "^7.2.1",
     "@fastify/sensible": "^5.0.0",
     "@fastify/type-provider-typebox": "^3.5.0",
-    "@fastify/websocket": "^8.2.0",
     "@sinclair/typebox": "^0.31.16",
     "fastify": "^4.0.0",
     "fastify-cli": "^5.8.0",

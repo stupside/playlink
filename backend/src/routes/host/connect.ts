@@ -3,13 +3,10 @@ import { FastifyInstance, RequestGenericInterface } from "fastify";
 
 import { Static, Type } from '@sinclair/typebox'
 
-import WebSocket from "ws";
 import prisma from "../../utils/prisma";
 
-type Session = { socket: WebSocket };
-
 // TODO: https://github.com/fastify/fastify-awilix
-export const connections = new Map<number, Session>();
+export const clients = new Map<number, (params: { type: string, url: string }) => Promise<void>>();
 
 export const QueryString = Type.Object({
     session: Type.Number()
@@ -23,34 +20,35 @@ interface Connect extends RequestGenericInterface {
 
 const route = async (fastify: FastifyInstance) => {
 
-    fastify.get<Connect>("/connect", {
-        websocket: true, schema: {
-            querystring: QueryString
-        }
-    },
-        async (stream, request) => {
+    fastify.get<Connect>("/host/connect", {}, async (request, response) => {
 
-            const session = await prisma.session.findUnique({ where: { id: request.query.session } });
-
-            if (session) {
-
-                stream.on("open", async () => {
-
-                    connections.set(session?.id, {
-                        socket: stream.socket,
-                    });
-                });
-
-                stream.on("close", async () => {
-
-                    connections.delete(session.id);
-                });
+        const session = await prisma.session.findUnique({
+            where: {
+                id: +request.query.session
             }
-            else {
-                stream.socket.close(404, "Session not found");
-            }
-
         });
+
+        if (session) {
+
+            const headers = {
+                "Connection": "keep-alive",
+                "Cache-Control": "no-cache",
+                "Content-Type": "text/event-stream",
+            }
+
+            response.raw.writeHead(200, headers);
+
+            clients.set(session.id, async (message) => {
+
+                response.raw.write(message);
+            });
+
+            request.raw.on("close", () => {
+
+                clients.delete(session.id);
+            });
+        }
+    });
 };
 
 export default route;
