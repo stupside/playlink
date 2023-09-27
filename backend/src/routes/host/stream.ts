@@ -14,13 +14,13 @@ export const QueryString = Type.Object({
 
 type QueryStringType = Static<typeof QueryString>;
 
-interface Connect extends RequestGenericInterface {
+interface Stream extends RequestGenericInterface {
     Querystring: QueryStringType,
 }
 
 const route = async (fastify: FastifyInstance) => {
 
-    fastify.get<Connect>("/host/connect", {}, async (request, response) => {
+    fastify.get<Stream>("/host/stream", {}, async (request, response) => {
 
         const session = await prisma.session.findUnique({
             where: {
@@ -40,7 +40,7 @@ const route = async (fastify: FastifyInstance) => {
 
             clients.set(session.id, async (message) => {
 
-                response.raw.write(message);
+                response.raw.write(JSON.stringify(message));
             });
 
             request.raw.on("close", () => {

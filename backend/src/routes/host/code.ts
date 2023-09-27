@@ -35,7 +35,9 @@ const route = async (fastify: FastifyInstance) => {
                 session: session.id
             } as SessionCodeJwt;
 
-            const jwt = fastify.jwt.sign(raw, { notBefore: Date.now(), expiresIn: request.body.expiry * 1000 });
+            const jwt = fastify.jwt.sign(raw, {
+                expiresIn: request.body.expiry * 1000
+            });
 
             const qr = await QRCode.toDataURL(jwt);
 
