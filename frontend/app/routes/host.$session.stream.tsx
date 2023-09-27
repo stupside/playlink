@@ -13,12 +13,12 @@ const PageComponent = () => {
     const { session } = useLoaderData<typeof loader>();
 
     const source = useMemo(() => {
-        return new EventSource(`http://localhost:3000/host/connect?session=${session}`);
+        return new EventSource(`http://localhost:3000/host/stream?session=${session}`);
     }, [session]);
 
     useEffect(() => {
 
-        const onMessage = (message: MessageEvent) => {
+        const onMessage = (message: MessageEvent<{ type: string, url: string }>) => {
             console.log(message);
         };
 

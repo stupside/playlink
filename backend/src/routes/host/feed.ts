@@ -5,7 +5,7 @@ import { Static, Type } from "@sinclair/typebox";
 import prisma from "../../utils/prisma";
 
 import { SessionCodeJwt } from "./code";
-import { clients } from "./connect";
+import { clients } from "./stream";
 
 const Body = Type.Object({ token: Type.String(), m3u8: Type.String() });
 
