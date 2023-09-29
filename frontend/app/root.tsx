@@ -24,9 +24,10 @@ const App = () => {
         <Meta />
         <Links />
       </head>
-      <body>
-        <h1>Playlink!</h1>
+      <body className="flex min-h-screen w-full flex-col overflow-x-hidden bg-white text-gray-900 dark:bg-gray-900 dark:text-gray-200">
+
         <Outlet />
+
         <Scripts />
       </body>
     </html>

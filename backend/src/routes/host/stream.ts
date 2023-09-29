@@ -5,8 +5,10 @@ import { Static, Type } from '@sinclair/typebox'
 
 import prisma from "../../utils/prisma";
 
+type Handler = (params: { type: string, url: string }) => Promise<void>;
+
 // TODO: https://github.com/fastify/fastify-awilix
-export const clients = new Map<number, (params: { type: string, url: string }) => Promise<void>>();
+export const clients = new Map<number, Handler>();
 
 export const QueryString = Type.Object({
     session: Type.Number()
