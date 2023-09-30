@@ -47,13 +47,24 @@ const route = async (fastify: FastifyInstance) => {
 
             clients.set(session.id, async (message) => {
 
-                response.raw.write(JSON.stringify(message));
+                const data = JSON.stringify({
+                    type: message.type,
+                    url: message.url
+                });
+
+                const event = `event: play\ndata: ${data}\n\n`;
+
+                response.raw.write(event);
             });
 
             request.raw.on("close", () => {
 
                 clients.delete(session.id);
             });
+        }
+        else {
+
+            response.code(404).send("Session not found");
         }
     });
 };

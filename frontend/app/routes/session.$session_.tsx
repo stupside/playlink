@@ -73,16 +73,14 @@ const Stream = ({ session, handleStream }: { session: number, handleStream: (typ
 
         const onMessage = async (message: MessageEvent<{ type: string, url: string }>) => {
 
-            console.log(message);
-
             await handleStream(message.data.type, message.data.url);
         };
 
-        source.addEventListener("message", onMessage);
+        source.addEventListener("play", onMessage);
 
         return () => {
 
-            source.removeEventListener("message", onMessage);
+            source.removeEventListener("play", onMessage);
         }
 
     }, [source, handleStream]);
