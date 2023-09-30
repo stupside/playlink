@@ -3,7 +3,7 @@
     "remix.env.d.ts",
     "**/*.ts",
     "**/*.tsx"
-, "app/routes/host.$session/.stream.tsx", "app/routes/host.$session/.code.tsx", "app/routes/host.$session/.stream.tsx", "app/routes/host.$session/.code.tsx"  ],
+  ],
   "compilerOptions": {
     "lib": [
       "DOM",

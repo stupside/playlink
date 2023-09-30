@@ -8,7 +8,13 @@ import cors from "@fastify/cors";
  */
 const plugin = fp(async (fastify, _) => {
 
-    await fastify.register(cors);
+    const urls = [fastify.config.FRONTEND_URL];
+
+    await fastify.register(cors, {
+        origin: urls,
+        methods: ['GET', 'POST', 'OPTION'],
+        credentials: true
+    });
 });
 
 export default plugin;
