@@ -9,7 +9,7 @@ const Reply = Type.Object({ session: Type.Number() });
 type BodyType = Static<typeof Body>;
 type ReplyType = Static<typeof Reply>;
 
-interface Host extends RequestGenericInterface {
+interface Create extends RequestGenericInterface {
     Body: BodyType,
     Reply: ReplyType
 }
@@ -18,7 +18,7 @@ export interface SessionCodeJwt { session: number };
 
 const route = async (fastify: FastifyInstance) => {
 
-    fastify.post<Host>("/host", {
+    fastify.post<Create>("/session", {
         schema: {
             body: Body,
             response: {

@@ -16,13 +16,13 @@ export const Params = Type.Object({
 
 type ParamsType = Static<typeof Params>;
 
-interface Stream extends RequestGenericInterface {
+interface Links extends RequestGenericInterface {
     Params: ParamsType,
 }
 
 const route = async (fastify: FastifyInstance) => {
 
-    fastify.get<Stream>("/host/:session/stream", {
+    fastify.get<Links>("/session/:session/links", {
         schema: {
             params: Params
         }
@@ -40,7 +40,8 @@ const route = async (fastify: FastifyInstance) => {
                 "Connection": "keep-alive",
                 "Cache-Control": "no-cache",
                 "Content-Type": "text/event-stream",
-            }
+                "Access-Control-Allow-Origin": fastify.config.FRONTEND_URL
+            };
 
             response.raw.writeHead(200, headers);
 

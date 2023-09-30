@@ -2,12 +2,13 @@ import { ArrowPathIcon } from "@heroicons/react/24/solid";
 import { LoaderFunctionArgs, ActionFunctionArgs, json } from "@remix-run/node";
 import { useFetcher, useLoaderData } from "@remix-run/react";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import ClientOnly from "~/components/ClientOnly";
 
 export const action = async ({ params }: ActionFunctionArgs) => {
 
     const session = params.session;
 
-    const response = await fetch(`http://localhost:3000/host/${session}/code`, {
+    const response = await fetch(`http://localhost:3000/session/${session}/code`, {
         method: "GET",
     });
 
@@ -29,6 +30,7 @@ const PageComponent = () => {
     const [messages, setMessages] = useState<Array<{ type: string, url: string }>>([]);
 
     const handleStream = useCallback(async (type: string, url: string) => {
+        console.log({ url });
         setMessages((old) => [...old, { type, url }]);
     }, [setMessages]);
 
@@ -50,26 +52,12 @@ const PageComponent = () => {
             <img src={fetcher.data?.qr} className="w-48 h-48" />
         </div>
 
-        <>
-            <button disabled={fetcher.data == undefined} type="button" onClick={async () => {
-                await fetch("http://localhost:3000/host/feed", {
-                    method: "POST",
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        token: fetcher.data?.token,
-                        m3u8: "test.m3u8"
-                    })
-                })
-            }}>
-                Simulate Feed
-            </button>
-
-            {typeof window == "undefined" ? null : <Stream session={data.session} handleStream={handleStream} />}
-
-            {messages.map((message) => <span>{message.url}</span>)}
-        </>
+        <ClientOnly>
+            <Stream session={data.session} handleStream={handleStream} />
+            {messages.map((message) => {
+                return <span key={message.url}>{message.url}</span>;
+            })}
+        </ClientOnly>
     </div>;
 }
 
@@ -77,12 +65,16 @@ const Stream = ({ session, handleStream }: { session: number, handleStream: (typ
 
     const source = useMemo(() => {
 
-        return new EventSource(`http://localhost:3000/host/${session}/stream`);
+        return new EventSource(`http://localhost:3000/session/${session}/links`);
+
     }, [session]);
 
     useEffect(() => {
 
         const onMessage = async (message: MessageEvent<{ type: string, url: string }>) => {
+
+            console.log(message);
+
             await handleStream(message.data.type, message.data.url);
         };
 

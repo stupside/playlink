@@ -21,7 +21,7 @@ export interface SessionCodeJwt { session: number };
 
 const route = async (fastify: FastifyInstance) => {
 
-    fastify.get<Code>("/host/:session/code", {
+    fastify.get<Code>("/session/:session/code", {
         schema: {
             params: Params,
             response: {

@@ -5,19 +5,19 @@ import { Static, Type } from "@sinclair/typebox";
 import prisma from "../../utils/prisma";
 
 import { SessionCodeJwt } from "./code";
-import { clients } from "./stream";
+import { clients } from "./links";
 
 const Body = Type.Object({ token: Type.String(), m3u8: Type.String() });
 
 type BodyType = Static<typeof Body>;
 
-interface Feed extends RequestGenericInterface {
+interface Play extends RequestGenericInterface {
     Body: BodyType,
 }
 
 const route = async (fastify: FastifyInstance) => {
 
-    fastify.post<Feed>("/host/feed", {
+    fastify.post<Play>("/session/play", {
         schema: {
             body: Body
         }

@@ -1,10 +1,10 @@
 import { SignalIcon } from "@heroicons/react/24/solid";
-import { ActionFunctionArgs, redirect } from "@remix-run/node";
+import { redirect } from "@remix-run/node";
 import { Form } from "@remix-run/react";
 
-export const action = async ({ request }: ActionFunctionArgs) => {
+export const action = async () => {
 
-    const response = await fetch("http://localhost:3000/host", {
+    const response = await fetch("http://localhost:3000/session", {
         method: "POST",
         headers: {
             'Content-Type': 'application/json',
@@ -14,7 +14,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
     const { session } = await response.json();
 
-    return redirect(`/host/${session}`);
+    return redirect(`/session/${session}`);
 }
 
 const PageComponent = () => {

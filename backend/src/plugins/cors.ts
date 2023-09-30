@@ -13,7 +13,7 @@ const plugin = fp(async (fastify, _) => {
     await fastify.register(cors, {
         origin: urls,
         methods: ['GET', 'POST', 'OPTION'],
-        credentials: true
+        credentials: true,
     });
 });
 
