@@ -2,6 +2,8 @@ import fastify from 'fastify';
 
 import AutoLoad from "@fastify/autoload";
 
+import { TypeBoxTypeProvider } from '@fastify/type-provider-typebox';
+
 import path from "path";
 
 import env from "./env";
@@ -10,7 +12,7 @@ const prepare = async () => {
 
     const server = fastify({
         logger: true
-    });
+    }).withTypeProvider<TypeBoxTypeProvider>();
 
     await server.register(env);
 

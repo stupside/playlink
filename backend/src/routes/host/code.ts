@@ -21,11 +21,18 @@ export interface SessionCodeJwt { session: number };
 
 const route = async (fastify: FastifyInstance) => {
 
-    fastify.get<Code>("/host/:session/code", {}, async (request, response) => {
+    fastify.get<Code>("/host/:session/code", {
+        schema: {
+            params: Params,
+            response: {
+                200: Reply
+            }
+        }
+    }, async (request, response) => {
 
         const session = await prisma.session.findUniqueOrThrow({
             where: {
-                id: Number(request.params.session)
+                id: request.params.session
             }
         });
 

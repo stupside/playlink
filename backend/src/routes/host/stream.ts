@@ -22,11 +22,15 @@ interface Stream extends RequestGenericInterface {
 
 const route = async (fastify: FastifyInstance) => {
 
-    fastify.get<Stream>("/host/:session/stream", {}, async (request, response) => {
+    fastify.get<Stream>("/host/:session/stream", {
+        schema: {
+            params: Params
+        }
+    }, async (request, response) => {
 
         const session = await prisma.session.findUniqueOrThrow({
             where: {
-                id: Number(request.params.session)
+                id: request.params.session
             }
         });
 

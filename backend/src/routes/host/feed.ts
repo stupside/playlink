@@ -17,7 +17,11 @@ interface Feed extends RequestGenericInterface {
 
 const route = async (fastify: FastifyInstance) => {
 
-    fastify.post<Feed>("/host/feed", {}, async (request, response) => {
+    fastify.post<Feed>("/host/feed", {
+        schema: {
+            body: Body
+        }
+    }, async (request, response) => {
 
         const { token, m3u8 } = request.body;
 

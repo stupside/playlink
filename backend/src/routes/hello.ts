@@ -12,7 +12,11 @@ interface Hello extends RequestGenericInterface {
 
 const route = async (fastify: FastifyInstance) => {
 
-    fastify.post<Hello>("/hello", {}, async (request, response) => {
+    fastify.post<Hello>("/hello", {
+        schema: {
+            body: Body
+        }
+    }, async (request, response) => {
         response.send(`Hello ${request.body.name}`);
     });
 };

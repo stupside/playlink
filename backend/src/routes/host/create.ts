@@ -18,7 +18,14 @@ export interface SessionCodeJwt { session: number };
 
 const route = async (fastify: FastifyInstance) => {
 
-    fastify.post<Host>("/host", {}, async (request, response) => {
+    fastify.post<Host>("/host", {
+        schema: {
+            body: Body,
+            response: {
+                200: Reply
+            }
+        }
+    }, async (request, response) => {
 
         const ip = request.ip;
         const agent = request.headers["user-agent"];
