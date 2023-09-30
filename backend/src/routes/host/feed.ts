@@ -23,7 +23,7 @@ const route = async (fastify: FastifyInstance) => {
 
         const jwt = fastify.jwt.verify<SessionCodeJwt>(token);
 
-        const session = await prisma.session.findUnique({
+        const session = await prisma.session.findUniqueOrThrow({
             where: {
                 id: jwt.session
             }

@@ -1,26 +1,37 @@
 import { ArrowPathIcon } from "@heroicons/react/24/solid";
 import { LoaderFunctionArgs, ActionFunctionArgs, json } from "@remix-run/node";
 import { useFetcher, useLoaderData } from "@remix-run/react";
-import { Suspense, useEffect, useMemo } from "react";
+import { Suspense, useCallback, useEffect, useMemo } from "react";
 
-export const action = async ({ request }: ActionFunctionArgs) => {
+export const action = async ({ params }: ActionFunctionArgs) => {
 
-    const formData = await request.formData();
+    const session = params.session;
 
-    const session = formData.get("session");
+    console.log({
+        session
+    });
 
-    const response = await fetch(`http://localhost:3000/host/code?session=${session}`, {
-        method: "GET"
+    const body = JSON.stringify({
+        session: Number(session)
+    });
+
+    const response = await fetch("http://localhost:3000/host/code", {
+        method: "POST",
+        body
     });
 
     const { qr, token } = await response.json();
+
+    console.log({
+        qr, token
+    })
 
     return json({ qr, token });
 }
 
 export const loader = async ({ params }: LoaderFunctionArgs) => {
 
-    return { session: Number(params.session) }
+    return json({ session: Number(params.session) });
 };
 
 const PageComponent = () => {
@@ -28,12 +39,12 @@ const PageComponent = () => {
     const data = useLoaderData<typeof loader>();
     const fetcher = useFetcher<typeof action>();
 
-    const handleStream = async (type: string, url: string) => {
+    const handleStream = useCallback(async (type: string, url: string) => {
         console.log({
             type,
             url
         });
-    }
+    }, []);
 
     return <div className="flex flex-col w-full h-full">
 
@@ -53,12 +64,15 @@ const PageComponent = () => {
             <img src={fetcher.data?.qr} className="w-48 h-48" />
         </div>
 
-        <Suspense fallback={<></>}><Stream session={data.session} handleStream={handleStream} /></Suspense>
+        <Suspense fallback={<></>}>
+            <Stream session={data.session} handleStream={handleStream} />
+        </Suspense>
     </div>;
 }
 
 const Stream = ({ session, handleStream }: { session: number, handleStream: (type: string, url: string) => Promise<void> }) => {
 
+    /*
     const source = useMemo(() => {
 
         return new EventSource(`http://localhost:3000/host/stream?session=${session}`);
@@ -78,6 +92,7 @@ const Stream = ({ session, handleStream }: { session: number, handleStream: (typ
         }
 
     }, [source, handleStream]);
+    */
 
     return <></>;
 }

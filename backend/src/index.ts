@@ -4,23 +4,34 @@ import AutoLoad from "@fastify/autoload";
 
 import path from "path";
 
-const main = async () => {
+import env from "./env";
+
+const prepare = async () => {
 
     const server = fastify({
-        logger: true,
+        logger: true
     });
 
-    server.register(AutoLoad, {
+    await server.register(env);
+
+    await server.register(AutoLoad, {
         dir: path.join(__dirname, 'plugins')
     });
 
-    server.register(AutoLoad, {
+    await server.register(AutoLoad, {
         dir: path.join(__dirname, 'routes'),
         dirNameRoutePrefix: false
     });
 
+    await server.ready();
+
+    return server;
+};
+
+prepare().then(server => {
+
     server.listen({
-        port: 3000 // TODO: hardcorded
+        port: server.config.PORT
     }, (error) => {
 
         if (error) {
@@ -28,6 +39,4 @@ const main = async () => {
             console.error(error);
         }
     });
-};
-
-main();
+});

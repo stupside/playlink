@@ -10,23 +10,23 @@ type Handler = (params: { type: string, url: string }) => Promise<void>;
 // TODO: https://github.com/fastify/fastify-awilix
 export const clients = new Map<number, Handler>();
 
-export const QueryString = Type.Object({
+export const Params = Type.Object({
     session: Type.Number()
 });
 
-type QueryStringType = Static<typeof QueryString>;
+type ParamsType = Static<typeof Params>;
 
 interface Stream extends RequestGenericInterface {
-    Querystring: QueryStringType,
+    Params: ParamsType,
 }
 
 const route = async (fastify: FastifyInstance) => {
 
-    fastify.get<Stream>("/host/stream", {}, async (request, response) => {
+    fastify.get<Stream>("/host/:session/stream", {}, async (request, response) => {
 
-        const session = await prisma.session.findUnique({
+        const session = await prisma.session.findUniqueOrThrow({
             where: {
-                id: +request.query.session
+                id: Number(request.params.session)
             }
         });
 
