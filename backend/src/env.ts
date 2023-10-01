@@ -10,6 +10,9 @@ declare module 'fastify' {
       DATABASE_URL: string,
       FRONTEND_URL: string,
       JWT_SECRET: string,
+      REDIS_HOST: string,
+      REDIS_PORT: number,
+      REDIS_PASSWORD: string,
     };
   }
 }
@@ -23,11 +26,10 @@ const plugin = fp(async (fastify, _) => {
 
   const schema = {
     type: "object",
-    required: ["PORT", "DATABASE_URL", "FRONTEND_URL", "JWT_SECRET"],
+    required: ["PORT", "DATABASE_URL", "FRONTEND_URL", "JWT_SECRET", "REDIS_HOST", "REDIS_PORT", "REDIS_PASSWORD"],
     properties: {
       PORT: {
         type: "integer",
-        default: 3000
       },
       FRONTEND_URL: {
         type: "string"
@@ -37,7 +39,16 @@ const plugin = fp(async (fastify, _) => {
       },
       JWT_SECRET: {
         type: "string",
-      }
+      },
+      REDIS_PORT: {
+        type: "integer",
+      },
+      REDIS_HOST: {
+        type: "string",
+      },
+      REDIS_PASSWORD: {
+        type: "string",
+      },
     }
   }
 

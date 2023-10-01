@@ -19,6 +19,7 @@
     "@fastify/cors": "^8.4.0",
     "@fastify/env": "^4.2.0",
     "@fastify/jwt": "^7.2.1",
+    "@fastify/redis": "^6.1.1",
     "@fastify/sensible": "^5.0.0",
     "@fastify/type-provider-typebox": "^3.5.0",
     "@sinclair/typebox": "^0.31.16",

@@ -10,7 +10,7 @@ services:
       POSTGRES_PASSWORD: "playlink"
     ports:
       - "5432:5432"
-  
+
   playlink-database-admin:
     image: dpage/pgadmin4
     hostname: admin.database.playlink
@@ -24,8 +24,18 @@ services:
     ports:
       - "2345:80"
 
+  redis:
+    image: bitnami/redis
+    hostname: redis.playlink
+    container_name: redis
+    restart: always
+    environment:
+      REDIS_REPLICATION_MODE: "master"
+      REDIS_PASSWORD: "playlink"
+    ports:
+      - "6379:6379"
 
 networks:
   default:
     name: playlink
-    driver: bridge 
+    driver: bridge

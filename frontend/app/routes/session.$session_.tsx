@@ -102,14 +102,14 @@ const usePlayLinks = ({ session }: { session: number }) => {
             setMessage(json);
         };
 
-        source?.addEventListener("play", (message) => {
+        source?.addEventListener("message", (message) => {
 
             onMessage(message);
         });
 
         return () => {
 
-            source?.removeEventListener("play", onMessage);
+            source?.removeEventListener("message", onMessage);
 
             source?.close();
         }

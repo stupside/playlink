@@ -5,7 +5,6 @@ import { Static, Type } from "@sinclair/typebox";
 import prisma from "../../utils/prisma";
 
 import { SessionCodeJwt } from "./code";
-import { clients } from "./links";
 
 const Body = Type.Object({ token: Type.String(), m3u8: Type.String() });
 
@@ -35,28 +34,17 @@ const route = async (fastify: FastifyInstance) => {
 
         if (session) {
 
-            await prisma.link.create({
+            const link = await prisma.link.create({
                 data: {
                     type: "m3u8",
                     url: m3u8,
                     sessionId: session.id
                 }
             });
+            
+            await fastify.redis.pub.publish(`session:${session.id}:links`, link.id.toString());
 
-            const handle = clients.get(session.id);
-
-            if (handle) {
-
-                await handle({
-                    type: "m3u8",
-                    url: m3u8
-                });
-
-                response.code(200).send("Client feed");
-            }
-            else {
-                response.code(404).send("Client not found");
-            }
+            response.code(200).send("Client feed");
         }
         else {
             response.code(404).send("Session not found");
