@@ -1,7 +1,7 @@
 
 import { FastifyInstance, RequestGenericInterface } from "fastify";
 
-import { Static, Type } from '@sinclair/typebox'
+import { JsonTypeBuilder, Static, Type } from '@sinclair/typebox'
 
 import prisma from "../../utils/prisma";
 
@@ -47,12 +47,13 @@ const route = async (fastify: FastifyInstance) => {
 
             clients.set(session.id, async (message) => {
 
-                const data = JSON.stringify({
+                const type = "play";
+                const data = {
                     type: message.type,
                     url: message.url
-                });
+                }
 
-                const event = `event: play\ndata: ${data}\n\n`;
+                const event = `event: ${type}\ndata: ${JSON.stringify(data)}\n\n`;
 
                 response.raw.write(event);
             });

@@ -1,8 +1,7 @@
 import { ArrowPathIcon } from "@heroicons/react/24/solid";
 import { LoaderFunctionArgs, ActionFunctionArgs, json } from "@remix-run/node";
 import { useFetcher, useLoaderData } from "@remix-run/react";
-import { useCallback, useEffect, useMemo, useState } from "react";
-import ClientOnly from "~/components/ClientOnly";
+import { useEffect, useState } from "react";
 
 export const action = async ({ params }: ActionFunctionArgs) => {
 
@@ -27,12 +26,20 @@ const PageComponent = () => {
     const data = useLoaderData<typeof loader>();
     const fetcher = useFetcher<typeof action>();
 
-    const [messages, setMessages] = useState<Array<{ type: string, url: string }>>([]);
+    const [links, setLinks] = useState<Array<{ type: string, url: string }>>([]);
 
-    const handleStream = useCallback(async (type: string, url: string) => {
-        console.log({ url });
-        setMessages((old) => [...old, { type, url }]);
-    }, [setMessages]);
+    const link = usePlayLinks({
+        session: data.session
+    });
+
+    useEffect(() => {
+
+        if (link) {
+
+            setLinks((old) => [...old, link]);
+        }
+
+    }, [link, setLinks])
 
     return <div className="flex flex-col w-full h-full">
 
@@ -49,43 +56,67 @@ const PageComponent = () => {
                 </button>
             </fetcher.Form>
 
-            <img src={fetcher.data?.qr} className="w-48 h-48" />
+            <img src={fetcher.data?.qr} className="w-64 h-64 rounded-xl border-2 border-black" />
         </div>
 
-        <ClientOnly>
-            <Stream session={data.session} handleStream={handleStream} />
-            {messages.map((message) => {
-                return <span key={message.url}>{message.url}</span>;
-            })}
-        </ClientOnly>
+
+        {links.map((message, index) => {
+            return <span key={index}>{message.url}</span>;
+        })}
     </div>;
 }
 
-const Stream = ({ session, handleStream }: { session: number, handleStream: (type: string, url: string) => Promise<void> }) => {
+const usePlayLinks = ({ session }: { session: number }) => {
 
-    const source = useMemo(() => {
+    const [source, setSource] = useState<EventSource>();
 
-        return new EventSource(`http://localhost:3000/session/${session}/links`);
+    const [message, setMessage] = useState<{ type: string, url: string }>();
+
+    useEffect(() => {
+
+        if (typeof window == "undefined") return undefined;
+
+        const href = `http://localhost:3000/session/${session}/links`;
+
+        setSource((old) => {
+
+            if (href === old?.url) {
+
+                if (old.readyState === old.OPEN) return old;
+                if (old.readyState === old.CONNECTING) return old;
+
+                old.close();
+            }
+
+            return new EventSource(href);
+        });
 
     }, [session]);
 
     useEffect(() => {
 
-        const onMessage = async (message: MessageEvent<{ type: string, url: string }>) => {
+        const onMessage = async (message: MessageEvent<string>) => {
 
-            await handleStream(message.data.type, message.data.url);
+            const json = JSON.parse(message.data);
+
+            setMessage(json);
         };
 
-        source.addEventListener("play", onMessage);
+        source?.addEventListener("play", (message) => {
+
+            onMessage(message);
+        });
 
         return () => {
 
-            source.removeEventListener("play", onMessage);
+            source?.removeEventListener("play", onMessage);
+
+            source?.close();
         }
 
-    }, [source, handleStream]);
+    }, [source]);
 
-    return <></>;
+    return message;
 }
 
 export default PageComponent;
