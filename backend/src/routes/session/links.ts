@@ -42,25 +42,28 @@ const route = async (fastify: FastifyInstance) => {
 
             response.raw.writeHead(200, headers);
 
-            await fastify.redis.subscriber.subscribe(`session:${session.id}:links`);
+            await fastify.redis.subscriber.psubscribe("session:*:links");
 
-            fastify.redis.sub.on("message", async (_, message) => {
+            fastify.redis.sub.on("message", async (channel, message) => {
 
-                const link = await prisma.link.findUniqueOrThrow({
-                    where: {
-                        id: Number(message)
+                if (channel === `session:${session.id}:links`) {
+
+                    const link = await prisma.link.findUniqueOrThrow({
+                        where: {
+                            id: Number(message)
+                        }
+                    });
+
+                    if (link) {
+
+                        const type = "message";
+
+                        const data = { type: link.type, url: link.url };
+
+                        const event = `event: ${type}\ndata: ${JSON.stringify(data)}\n\n`;
+
+                        response.raw.write(event);
                     }
-                });
-
-                if (link) {
-
-                    const type = "message";
-
-                    const data = { type: link.type, url: link.url };
-
-                    const event = `event: ${type}\ndata: ${JSON.stringify(data)}\n\n`;
-
-                    response.raw.write(event);
                 }
             });
         }

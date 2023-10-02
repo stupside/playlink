@@ -24,7 +24,7 @@ const plugin = fp(async (fastify, _) => {
 
   const schema = {
     type: "object",
-    required: ["PORT", "DATABASE_URL", "FRONTEND_URL", "JWT_SECRET", "REDIS_HOST", "REDIS_PORT", "REDIS_PASSWORD"],
+    required: ["PORT", "DATABASE_URL", "FRONTEND_URL", "JWT_SECRET", "REDIS_URL"],
     properties: {
       PORT: {
         type: "integer",

@@ -15,7 +15,7 @@ const plugin = fp(async (fastify, _) => {
 
     await fastify.register(redis, {
         namespace: "subscriber",
-        url: fastify.config.REDIS_URL
+        url: fastify.config.REDIS_URL,
     })
 });
 
