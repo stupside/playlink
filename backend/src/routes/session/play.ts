@@ -42,7 +42,7 @@ const route = async (fastify: FastifyInstance) => {
                 }
             });
 
-            await fastify.redis.publisher.publish(`session:${session.id}:links`, link.id.toString());
+            await fastify.redis.publisher.publish(`session.${session.id}.links`, link.id.toString());
 
             response.code(200).send("Client feed");
         }

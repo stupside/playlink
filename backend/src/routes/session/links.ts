@@ -42,11 +42,13 @@ const route = async (fastify: FastifyInstance) => {
 
             response.raw.writeHead(200, headers);
 
-            await fastify.redis.subscriber.psubscribe("session:*:links");
+            const links = `session.${session.id}.links`;
 
-            fastify.redis.sub.on("message", async (channel, message) => {
+            await fastify.redis.subscriber.subscribe(links);
 
-                if (channel === `session:${session.id}:links`) {
+            fastify.redis.subscriber.on("message", async (channel, message) => {
+
+                if (channel === links) {
 
                     const link = await prisma.link.findUniqueOrThrow({
                         where: {
@@ -65,6 +67,11 @@ const route = async (fastify: FastifyInstance) => {
                         response.raw.write(event);
                     }
                 }
+            });
+
+            response.raw.on("close", () => {
+
+                fastify.redis.subscriber.unsubscribe(links);
             });
         }
         else {
