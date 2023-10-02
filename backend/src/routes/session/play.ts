@@ -41,8 +41,8 @@ const route = async (fastify: FastifyInstance) => {
                     sessionId: session.id
                 }
             });
-            
-            await fastify.redis.pub.publish(`session:${session.id}:links`, link.id.toString());
+
+            await fastify.redis.publisher.publish(`session:${session.id}:links`, link.id.toString());
 
             response.code(200).send("Client feed");
         }

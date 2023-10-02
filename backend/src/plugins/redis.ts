@@ -8,20 +8,14 @@ import redis from "@fastify/redis";
  */
 const plugin = fp(async (fastify, _) => {
 
-    const options = {
-        host: fastify.config.REDIS_HOST,
-        port: fastify.config.REDIS_PORT,
-        password: fastify.config.REDIS_PASSWORD
-    };
-
     await fastify.register(redis, {
-        namespace: "pub",
-        ...options
+        namespace: "publisher",
+        url: fastify.config.REDIS_URL
     });
 
     await fastify.register(redis, {
-        namespace: "sub",
-        ...options
+        namespace: "subscriber",
+        url: fastify.config.REDIS_URL
     })
 });
 

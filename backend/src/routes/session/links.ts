@@ -42,7 +42,7 @@ const route = async (fastify: FastifyInstance) => {
 
             response.raw.writeHead(200, headers);
 
-            await fastify.redis.sub.subscribe(`session:${session.id}:links`);
+            await fastify.redis.subscriber.subscribe(`session:${session.id}:links`);
 
             fastify.redis.sub.on("message", async (_, message) => {
 

@@ -10,9 +10,7 @@ declare module 'fastify' {
       DATABASE_URL: string,
       FRONTEND_URL: string,
       JWT_SECRET: string,
-      REDIS_HOST: string,
-      REDIS_PORT: number,
-      REDIS_PASSWORD: string,
+      REDIS_URL: string,
     };
   }
 }
@@ -40,13 +38,7 @@ const plugin = fp(async (fastify, _) => {
       JWT_SECRET: {
         type: "string",
       },
-      REDIS_PORT: {
-        type: "integer",
-      },
-      REDIS_HOST: {
-        type: "string",
-      },
-      REDIS_PASSWORD: {
+      REDIS_URL: {
         type: "string",
       },
     }
