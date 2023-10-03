@@ -4,23 +4,23 @@ import { Static, Type } from "@sinclair/typebox";
 
 import prisma from "../../utils/prisma";
 
-const Body = Type.Object({ code: Type.String() });
+const Params = Type.Object({ code: Type.String() });
 
-type BodyType = Static<typeof Body>;
+type ParamsType = Static<typeof Params>;
 
-interface Peer extends RequestGenericInterface {
-    Body: BodyType,
+interface Token extends RequestGenericInterface {
+    Params: ParamsType,
 }
 
 const route = async (fastify: FastifyInstance) => {
 
-    fastify.post<Peer>("/session/peer", {
+    fastify.get<Token>("/session/:code/token", {
         schema: {
-            body: Body
+            params: Params
         }
     }, async (request, response) => {
 
-        const { code } = request.body;
+        const { code } = request.params;
 
         const id = await fastify.redis.codes.getdel(code);
 
