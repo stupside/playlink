@@ -4,7 +4,11 @@ import { Static, Type } from "@sinclair/typebox";
 
 import prisma from "../../utils/prisma";
 
-const Body = Type.Object({ url: Type.String(), type: Type.String() });
+const Body = Type.Object({
+    url: Type.String({ description: "An url." }),
+    type: Type.String({ description: "The type of the content the url is pointing to." }),
+    token: Type.String({ description: "The token generated from a code sent by the host." }),
+});
 
 type BodyType = Static<typeof Body>;
 
@@ -19,18 +23,18 @@ const route = async (fastify: FastifyInstance) => {
             tags: [
                 "session"
             ],
-            description: "Send a link to the host",
+            description: "Send a link to the host.",
             body: Body
         }
     }, async (request, response) => {
 
-        const { url, type } = request.body;
+        const { url, type, token } = request.body;
 
-        const payload = await request.jwtVerify<{
+        const payload = fastify.jwt.verify<{
             ip: string,
             agent?: string,
             session: number,
-        }>();
+        }>(token);
 
         const session = await prisma.session.findUniqueOrThrow({
             where: {

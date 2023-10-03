@@ -22,8 +22,8 @@ const route = async (fastify: FastifyInstance) => {
             tags: [
                 "session"
             ],
-            description: "Listen for links",
-            params: Params
+            description: "Listen for links.",
+            params: Params,
         }
     }, async (request, response) => {
 

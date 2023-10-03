@@ -10,8 +10,19 @@ import { randomUUID } from "crypto";
 import prisma from "../../../utils/prisma";
 
 const Params = Type.Object({ session: Type.Number() });
-const Query = Type.Object({ expiry: Type.Number({ minimum: 15, maximum: 120, default: 30 }) });
-const Reply = Type.Object({ qr: Type.String(), code: Type.String(), expiry: Type.Number() });
+const Query = Type.Object({
+    expiry: Type.Number({
+        minimum: 15,
+        maximum: 120,
+        default: 15,
+        description: "When will the returned code expire."
+    })
+});
+const Reply = Type.Object({
+    qr: Type.String({ description: "A qr code that wrap the attached code." }),
+    code: Type.String({ description: "A code that can be used to generate a token." }),
+    expiry: Type.Number({ description: "From now, when will the code expire" })
+});
 
 type ParamsType = Static<typeof Params>;
 type QueryType = Static<typeof Query>;
@@ -32,8 +43,9 @@ const route = async (fastify: FastifyInstance) => {
             tags: [
                 "session"
             ],
-            description: "Generate a unique code and qr code to retrieve a temporary token an be able to send links to the host",
+            description: "Generate a unique code and qr code to retrieve a temporary token an be able to send links to the host.",
             params: Params,
+            querystring: Query,
             response: {
                 200: Reply
             }

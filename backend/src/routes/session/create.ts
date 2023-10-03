@@ -23,7 +23,7 @@ const route = async (fastify: FastifyInstance) => {
             tags: [
                 "session"
             ],
-            description: "Create a new session and start accepting links",
+            description: "Create a new session and start accepting links.",
             body: Body,
             response: {
                 200: Reply

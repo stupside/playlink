@@ -20,8 +20,7 @@ const plugin = fp(async (fastify, _) => {
                 url: 'https://swagger.io',
                 description: 'Find more info here'
             },
-            host: 'localhost',
-            schemes: ['http'],
+            schemes: ['http', 'https'],
             consumes: ['application/json'],
             produces: ['application/json'],
             tags: [
