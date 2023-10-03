@@ -37,6 +37,8 @@ const route = async (fastify: FastifyInstance) => {
             "Connection": "keep-alive",
             "Cache-Control": "no-cache",
             "Content-Type": "text/event-stream",
+
+            "Access-Control-Allow-Origin": fastify.config.FRONTEND_URL
         };
 
         response.raw.writeHead(200, headers);
