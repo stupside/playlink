@@ -2,18 +2,23 @@ import { FastifyInstance, RequestGenericInterface } from "fastify";
 
 import { Static, Type } from "@sinclair/typebox";
 
+import crypto from "crypto";
 import QRCode from "qrcode";
 
 import prisma from "../../utils/prisma";
+import { randomUUID } from "crypto";
 
 const Params = Type.Object({ session: Type.Number() });
-const Reply = Type.Object({ qr: Type.String(), token: Type.String() });
+const Query = Type.Object({ expiry: Type.Number({ minimum: 15, maximum: 120, default: 30 }) });
+const Reply = Type.Object({ qr: Type.String(), code: Type.String(), expiry: Type.Number() });
 
 type ParamsType = Static<typeof Params>;
+type QueryType = Static<typeof Query>;
 type ReplyType = Static<typeof Reply>;
 
 interface Code extends RequestGenericInterface {
     Params: ParamsType,
+    Querystring: QueryType,
     Reply: ReplyType
 }
 
@@ -36,27 +41,19 @@ const route = async (fastify: FastifyInstance) => {
             }
         });
 
-        if (session) {
+        const hasher = crypto.createHash("sha256");
 
-            const raw = {
-                session: session.id
-            } as SessionCodeJwt;
+        const hash = hasher.update(`${session.id}.${randomUUID()}`).digest("base64");
 
-            const jwt = fastify.jwt.sign(raw, {
-                expiresIn: 120 * 1000
-            });
+        await fastify.redis.codes.setex(hash, request.query.expiry, session.id);
 
-            const qr = await QRCode.toDataURL(jwt);
+        const qr = await QRCode.toDataURL(hash);
 
-            await response.code(200).send({
-                qr,
-                token: jwt
-            });
-        }
-        else {
-
-            response.code(404);
-        }
+        await response.code(200).send({
+            qr,
+            code: hash,
+            expiry: request.query.expiry,
+        });
     });
 };
 

@@ -16,7 +16,12 @@ const plugin = fp(async (fastify, _) => {
     await fastify.register(redis, {
         namespace: "subscriber",
         url: fastify.config.REDIS_URL,
-    })
+    });
+
+    await fastify.register(redis, {
+        namespace: "codes",
+        url: fastify.config.REDIS_URL,
+    });
 });
 
 export default plugin;

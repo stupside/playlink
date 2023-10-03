@@ -13,7 +13,7 @@ datasource db {
 model Session {
   id Int @id @default(autoincrement())
 
-  ip String
+  ip    String
   agent String?
 
   links Link[]
@@ -21,6 +21,9 @@ model Session {
 
 model Link {
   id Int @id @default(autoincrement())
+
+  ip    String
+  agent String?
 
   type String
   url  String

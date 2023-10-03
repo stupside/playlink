@@ -4,9 +4,7 @@ import { Static, Type } from "@sinclair/typebox";
 
 import prisma from "../../utils/prisma";
 
-import { SessionCodeJwt } from "./code";
-
-const Body = Type.Object({ token: Type.String(), m3u8: Type.String() });
+const Body = Type.Object({ token: Type.String(), url: Type.String(), type: Type.String() });
 
 type BodyType = Static<typeof Body>;
 
@@ -22,33 +20,36 @@ const route = async (fastify: FastifyInstance) => {
         }
     }, async (request, response) => {
 
-        const { token, m3u8 } = request.body;
+        const { url, type } = request.body;
 
-        const jwt = fastify.jwt.verify<SessionCodeJwt>(token);
+        const payload = await request.jwtVerify<{
+            ip: string,
+            agent?: string,
+            session: number,
+        }>();
 
         const session = await prisma.session.findUniqueOrThrow({
             where: {
-                id: jwt.session
+                id: payload.session
             }
         });
 
-        if (session) {
+        const ip = request.ip;
+        const agent = request.headers["user-agent"];
 
-            const link = await prisma.link.create({
-                data: {
-                    type: "m3u8",
-                    url: m3u8,
-                    sessionId: session.id
-                }
-            });
+        const link = await prisma.link.create({
+            data: {
+                ip,
+                agent,
+                type,
+                url,
+                sessionId: session.id
+            }
+        });
 
-            await fastify.redis.publisher.publish(`session.${session.id}.links`, link.id.toString());
+        await fastify.redis.publisher.publish(`session.${session.id}.links`, link.id.toString());
 
-            response.code(200).send("Client feed");
-        }
-        else {
-            response.code(404).send("Session not found");
-        }
+        response.code(200);
     });
 };
 

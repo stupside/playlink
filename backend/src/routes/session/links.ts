@@ -29,55 +29,43 @@ const route = async (fastify: FastifyInstance) => {
             }
         });
 
-        if (session) {
+        const headers = {
+            "Connection": "keep-alive",
+            "Cache-Control": "no-cache",
+            "Content-Type": "text/event-stream",
+        };
 
-            const headers = {
+        response.raw.writeHead(200, headers);
 
-                "Connection": "keep-alive",
-                "Cache-Control": "no-cache",
-                "Content-Type": "text/event-stream",
+        const links = `session.${session.id}.links`;
 
-                "Access-Control-Allow-Origin": fastify.config.FRONTEND_URL
-            };
+        await fastify.redis.subscriber.subscribe(links);
 
-            response.raw.writeHead(200, headers);
+        fastify.redis.subscriber.on("message", async (channel, message) => {
 
-            const links = `session.${session.id}.links`;
+            if (channel === links) {
 
-            await fastify.redis.subscriber.subscribe(links);
-
-            fastify.redis.subscriber.on("message", async (channel, message) => {
-
-                if (channel === links) {
-
-                    const link = await prisma.link.findUniqueOrThrow({
-                        where: {
-                            id: Number(message)
-                        }
-                    });
-
-                    if (link) {
-
-                        const type = "message";
-
-                        const data = { type: link.type, url: link.url };
-
-                        const event = `event: ${type}\ndata: ${JSON.stringify(data)}\n\n`;
-
-                        response.raw.write(event);
+                const link = await prisma.link.findUniqueOrThrow({
+                    where: {
+                        id: Number(message)
                     }
-                }
-            });
+                });
 
-            response.raw.on("close", () => {
+                const type = "message";
 
-                fastify.redis.subscriber.unsubscribe(links);
-            });
-        }
-        else {
+                const data = { type: link.type, url: link.url };
 
-            response.code(404).send("Session not found");
-        }
+                const event = `event: ${type}\ndata: ${JSON.stringify(data)}\n\n`;
+
+                response.raw.write(event);
+            }
+        });
+
+        response.raw.on("close", () => {
+
+            fastify.redis.subscriber.unsubscribe(links);
+        });
+
     });
 };
 
