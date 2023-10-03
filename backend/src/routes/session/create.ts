@@ -20,6 +20,10 @@ const route = async (fastify: FastifyInstance) => {
 
     fastify.post<Create>("/session", {
         schema: {
+            tags: [
+                "session"
+            ],
+            description: "Create a new session and start accepting links",
             body: Body,
             response: {
                 200: Reply

@@ -5,8 +5,9 @@ import { Static, Type } from "@sinclair/typebox";
 import crypto from "crypto";
 import QRCode from "qrcode";
 
-import prisma from "../../utils/prisma";
 import { randomUUID } from "crypto";
+
+import prisma from "../../../utils/prisma";
 
 const Params = Type.Object({ session: Type.Number() });
 const Query = Type.Object({ expiry: Type.Number({ minimum: 15, maximum: 120, default: 30 }) });
@@ -28,6 +29,10 @@ const route = async (fastify: FastifyInstance) => {
 
     fastify.get<Code>("/session/:session/code", {
         schema: {
+            tags: [
+                "session"
+            ],
+            description: "Generate a unique code and qr code to retrieve a temporary token an be able to send links to the host",
             params: Params,
             response: {
                 200: Reply

@@ -4,18 +4,22 @@ import { Static, Type } from "@sinclair/typebox";
 
 import prisma from "../../utils/prisma";
 
-const Body = Type.Object({ token: Type.String(), url: Type.String(), type: Type.String() });
+const Body = Type.Object({ url: Type.String(), type: Type.String() });
 
 type BodyType = Static<typeof Body>;
 
-interface Play extends RequestGenericInterface {
+interface Link extends RequestGenericInterface {
     Body: BodyType,
 }
 
 const route = async (fastify: FastifyInstance) => {
 
-    fastify.post<Play>("/session/play", {
+    fastify.post<Link>("/session/link", {
         schema: {
+            tags: [
+                "session"
+            ],
+            description: "Send a link to the host",
             body: Body
         }
     }, async (request, response) => {

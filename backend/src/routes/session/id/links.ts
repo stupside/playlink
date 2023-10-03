@@ -3,7 +3,7 @@ import { FastifyInstance, RequestGenericInterface } from "fastify";
 
 import { Static, Type } from '@sinclair/typebox'
 
-import prisma from "../../utils/prisma";
+import prisma from "../../../utils/prisma";
 
 export const Params = Type.Object({
     session: Type.Number()
@@ -19,6 +19,10 @@ const route = async (fastify: FastifyInstance) => {
 
     fastify.get<Links>("/session/:session/links", {
         schema: {
+            tags: [
+                "session"
+            ],
+            description: "Listen for links",
             params: Params
         }
     }, async (request, response) => {
