@@ -61,7 +61,7 @@ const PageComponent = () => {
 
 
         {links.map((message, index) => {
-            return <span key={index}>{message.url}</span>;
+            return <span key={index}>{message.type} {message.url}</span>;
         })}
     </div>;
 }
