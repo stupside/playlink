@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
+import { LinkType } from "./useLink";
 
 const usePlayLinks = ({ session }: { session: number }) => {
 
     const [source, setSource] = useState<EventSource>();
 
-    const [message, setMessage] = useState<{ type: string, url: string }>();
+    const [message, setMessage] = useState<{ type: LinkType, url: string }>();
 
     useEffect(() => {
 

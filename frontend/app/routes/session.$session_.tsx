@@ -1,7 +1,8 @@
 import { ArrowPathIcon } from "@heroicons/react/24/solid";
 import { LoaderFunctionArgs, ActionFunctionArgs, json } from "@remix-run/node";
-import { useFetcher, useLoaderData } from "@remix-run/react";
+import { Link, useFetcher, useLoaderData } from "@remix-run/react";
 import { useEffect, useState } from "react";
+import useLink, { LinkType } from "~/hooks/useLink";
 import usePlayLinks from "~/hooks/usePlayLinks";
 
 export const action = async ({ params }: ActionFunctionArgs) => {
@@ -29,7 +30,9 @@ const PageComponent = () => {
 
     const [expiry, setExpiry] = useState<NodeJS.Timeout>();
 
-    const [links, setLinks] = useState<Array<{ type: string, url: string }>>([]);
+    const [links, setLinks] = useState<Array<{  url: string, type: LinkType }>>([]);
+
+    const { getUrl } = useLink();
 
     const link = usePlayLinks({
         session: data.session
@@ -42,12 +45,13 @@ const PageComponent = () => {
             setLinks((old) => [...old, link]);
         }
 
-    }, [link, setLinks])
+    }, [link, setLinks]);
 
     useEffect(() => {
 
         const onTimeout = () => {
 
+            console.debug("Code expired");
         };
 
         setExpiry((old) => {
@@ -57,10 +61,6 @@ const PageComponent = () => {
                 old.refresh();
             }
             else {
-
-                setInterval(() => {
-
-                }, 1000);
 
                 return setTimeout(onTimeout, fetcher.data?.expiry * 1000);
             };
@@ -84,6 +84,22 @@ const PageComponent = () => {
                         }
                     </button>
                 </fetcher.Form>
+                <ul>
+                    {links.map((link, index) => {
+
+                        const url = getUrl({
+                            session: data.session,
+                            url: link.url,
+                            type: link.type
+                        });
+
+                        return url && <li key={index}>
+                            <Link to={url}>
+                                {link.type} {link.url}
+                            </Link>
+                        </li>;
+                    })}
+                </ul>
             </div>
         </div>
     </div>;
