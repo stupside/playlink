@@ -11,9 +11,9 @@ export const action = async ({ params }: ActionFunctionArgs) => {
         method: "GET",
     });
 
-    const { qr, token } = await response.json();
+    const { qr, code, expiry } = await response.json();
 
-    return json({ qr, token });
+    return json({ qr, code, expiry });
 }
 
 export const loader = async ({ params }: LoaderFunctionArgs) => {
@@ -25,6 +25,8 @@ const PageComponent = () => {
 
     const data = useLoaderData<typeof loader>();
     const fetcher = useFetcher<typeof action>();
+
+    const [expiry, setExpiry] = useState<NodeJS.Timeout>();
 
     const [links, setLinks] = useState<Array<{ type: string, url: string }>>([]);
 
@@ -41,28 +43,47 @@ const PageComponent = () => {
 
     }, [link, setLinks])
 
-    return <div className="flex flex-col w-full h-full">
+    useEffect(() => {
 
-        <div className="relative m-auto">
+        const onTimeout = () => {
 
-            <fetcher.Form method="post" className="absolute left-0 top-0">
+        };
 
-                <button type="submit" className="m-5">
+        setExpiry((old) => {
 
-                    {fetcher.state === "idle"
-                        ? <ArrowPathIcon className="w-6 h-6" />
-                        : <ArrowPathIcon className="w-6 h-6 animate-spin" />
-                    }
-                </button>
-            </fetcher.Form>
+            if (old) {
+                old.refresh();
+            }
+            else {
 
-            <img src={fetcher.data?.qr} className="w-64 h-64 rounded-xl border-2 border-black" />
+                setInterval(() => {
+                    
+                }, 1000);
+
+                return setTimeout(onTimeout, fetcher.data?.expiry * 1000);
+            };
+
+            return old;
+        });
+
+    }, [setExpiry, fetcher.data?.expiry]);
+
+    return <div className="m-auto">
+        <div className="flex justify-center items-center">
+            <div>
+                <img src={fetcher.data?.qr} title={fetcher.data?.code} className="w-64 h-64 rounded-xl border-2 border-black" />
+            </div>
+            <div className="mx-16">
+                <fetcher.Form method="post" className="">
+                    <button type="submit" title={"code"} className="m-5 rounded">
+                        {fetcher.state === "idle"
+                            ? <ArrowPathIcon className="w-6 h-6" />
+                            : <ArrowPathIcon className="w-6 h-6 animate-spin" />
+                        }
+                    </button>
+                </fetcher.Form>
+            </div>
         </div>
-
-
-        {links.map((message, index) => {
-            return <span key={index}>{message.type} {message.url}</span>;
-        })}
     </div>;
 }
 
@@ -74,7 +95,7 @@ const usePlayLinks = ({ session }: { session: number }) => {
 
     useEffect(() => {
 
-        if (typeof window == "undefined") return undefined;
+        if (typeof window == "undefined") return;
 
         const href = `http://localhost:3000/session/${session}/links`;
 
