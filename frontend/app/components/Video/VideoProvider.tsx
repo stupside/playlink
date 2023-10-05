@@ -1,6 +1,7 @@
 import { RefObject, createContext, useCallback, useContext, useRef, useState } from "react";
 
 interface IVideoContext {
+    url: string,
     video: RefObject<HTMLVideoElement>,
     player: RefObject<HTMLDivElement>,
 }
@@ -11,7 +12,7 @@ const timeout = 5;
 
 export const useVideo = () => useContext(VideoContext);
 
-const VideoProvider = ({ children }: { children: React.ReactNode }) => {
+const VideoProvider = ({ url, children }: { url: string, children: React.ReactNode }) => {
 
     const video = useRef<HTMLVideoElement>(null);
     const player = useRef<HTMLDivElement>(null);
@@ -32,6 +33,8 @@ const VideoProvider = ({ children }: { children: React.ReactNode }) => {
 
         clearTimeout(controlsTimeout.current);
 
+        controlsTimeout.current?.refresh();
+
         setShowControls(true);
 
         controlsTimeout.current = setTimeout(() => {
@@ -44,12 +47,14 @@ const VideoProvider = ({ children }: { children: React.ReactNode }) => {
     return <div ref={player} className="relative flex flex-grow justify-center">
 
         <video
+            src={url}
             className="max-h-screen cursor-none"
             ref={video}
             onMouseMove={delayCloseControls}
         />
 
         <VideoContext.Provider value={{
+            url,
             video,
             player,
         }}>

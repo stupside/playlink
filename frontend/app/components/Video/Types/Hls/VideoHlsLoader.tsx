@@ -1,15 +1,18 @@
 import { useEffect } from "react";
 import { useVideoHls } from ".";
+import { useVideo } from "../../VideoProvider";
 
-export const VideoHlsLoader = ({ source }: { source: string }) => {
+export const VideoHlsLoader = () => {
 
     const { hls } = useVideoHls();
 
+    const { url } = useVideo();
+
     useEffect(() => {
 
-        hls.loadSource(source);
+        hls.loadSource(url);
 
-    }, [hls, source])
+    }, [hls, url])
 
     return <></>;
 }
