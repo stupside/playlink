@@ -1,13 +1,5 @@
-"use client";
-
-import { atom, useRecoilState } from "recoil";
-import { useVideo } from "../VideoProvider";
-import { useCallback, useEffect, useMemo, useState } from "react";
-
-export const VideoState_Timeline = atom<number>({
-    key: "VideoState_Timeline",
-    default: 0
-});
+import { useCallback, useState } from "react";
+import useVideoTimeline from "~/hooks/video/useVideoTimeline";
 
 const colors = {
     notwatched: "bg-slate-100",
@@ -18,47 +10,19 @@ export type VideoTimelineFC = React.FunctionComponent<{}>;
 
 const VideoTimeline: VideoTimelineFC = () => {
 
-    const { video } = useVideo();
-
-    const [timeline, setTimeline] = useRecoilState(VideoState_Timeline);
+    const { duration, seekTimeline, timeline } = useVideoTimeline();
 
     const [nextTimeline, setNextTimeline] = useState(0);
 
     const [timelineFocused, setTimelineFocused] = useState(false);
     const [timelineHolden, setTimelineHolden] = useState(false);
 
-    useEffect(() => {
+    const onHoldTimeline = useCallback(() => {
 
-        if (video.current) {
+        setTimelineHolden(true);
+    }, [setTimelineHolden]);
 
-            setTimeline(video.current.currentTime);
-        }
-
-        const onTimeUpdate = () => {
-
-            if (video.current) {
-
-                const time = Number(video.current?.currentTime.toFixed());
-
-                setTimeline(time);
-            }
-        };
-
-        video.current?.addEventListener("timeupdate", onTimeUpdate);
-
-        return () => {
-
-            video.current?.removeEventListener("timeupdate", onTimeUpdate);
-        }
-
-    }, [video.current, setTimeline]);
-
-    const duration = useMemo(() => {
-
-        return Number(fixNumber(video.current?.duration).toFixed());
-    }, [video.current?.duration]);
-
-    const getPercent = useCallback((timeline: number) => {
+    const percent = useCallback((timeline: number) => {
 
         if (duration)
             return Number(100 * timeline / duration).toFixed();
@@ -67,38 +31,28 @@ const VideoTimeline: VideoTimelineFC = () => {
 
     }, [duration]);
 
-    const holdTimeline = useCallback(() => {
+    const onReleaseTimeline = useCallback(() => {
 
-        setTimelineHolden(true);
-    }, [setTimelineHolden]);
-
-    const releaseTimeline = useCallback(() => {
-
-        if (video.current) {
-
-            video.current.currentTime = nextTimeline;
-        }
+        seekTimeline(nextTimeline);
 
         setTimelineHolden(false);
 
-    }, [setTimelineHolden, video.current, nextTimeline]);
+    }, [setTimelineHolden, seekTimeline, nextTimeline]);
 
     const onTimelineEvent = useCallback(({ clientX, currentTarget }: { clientX: number, currentTarget: HTMLDivElement }) => {
 
         const percent = getCursorPositionInDiv(clientX, currentTarget);
 
-        if (video.current) {
+        const factor = Math.min(Math.max(percent, 0), 1);
 
-            const factor = Math.min(Math.max(percent, 0), 1);
+        setNextTimeline(factor * duration);
 
-            setNextTimeline(factor * video.current.duration);
-        }
-    }, [setNextTimeline, video.current]);
+    }, [setNextTimeline, duration]);
 
     return <div className="flex items-center">
 
         <div className="mx-5">
-            <TimeIndicator timeline={timeline} />
+            <TimeIndicator />
         </div>
 
         <div className="relative w-full flex items-center cursor-pointer"
@@ -106,25 +60,25 @@ const VideoTimeline: VideoTimelineFC = () => {
             onMouseEnter={() => { setTimelineFocused(true); }}
             onMouseLeave={() => { setTimelineFocused(false); }}
 
-            onMouseDown={holdTimeline}
-            onMouseUp={releaseTimeline}
+            onMouseDown={onHoldTimeline}
+            onMouseUp={onReleaseTimeline}
 
             onClick={onTimelineEvent}
-            onMouseMove={(props) => {
 
+            onMouseMove={(props) => {
                 if (timelineHolden) {
                     onTimelineEvent(props);
                 }
             }}
         >
-            <div className={`absolute w-full h-2 ${colors.notwatched} opacity-30 rounded-full`}></div>
+            <div className={`absolute w-full h-2 ${colors.notwatched} opacity-30 rounded-full`}>
+            </div>
 
             <div className="absolute w-full flex items-center rounded-full">
 
                 <div
                     className={`h-2 ${colors.watched} rounded-full`}
-
-                    style={{ width: `${timelineHolden ? getPercent(nextTimeline) : getPercent(timeline)}%` }}
+                    style={{ width: `${timelineHolden ? percent(nextTimeline) : percent(timeline)}%` }}
                 >
                 </div>
 
@@ -133,13 +87,15 @@ const VideoTimeline: VideoTimelineFC = () => {
         </div>
 
         <div className="mx-5">
-            <TimeIndicator timeline={duration} />
+            <TimeIndicator />
         </div>
 
     </div>;
 }
 
-const TimeIndicator = ({ timeline }: { timeline: number }) => {
+const TimeIndicator = () => {
+
+    const { timeline } = useVideoTimeline();
 
     const minutes = Number((timeline / 60).toFixed());
     const seconds = timeline % 60;
@@ -147,18 +103,6 @@ const TimeIndicator = ({ timeline }: { timeline: number }) => {
     const getDigits = (value: number) => value < 10 ? `0${value}` : value;
 
     return <span className="text-gray-300">{getDigits(minutes)}:{getDigits(seconds)}</span>
-};
-
-const fixNumber = (value?: number) => {
-
-    if (value) {
-
-        if (isNaN(value)) return 0;
-
-        return value;
-    }
-
-    return 0;
 };
 
 const getCursorPositionInDiv = (clientX: number, target: HTMLDivElement) => {

@@ -1,5 +1,3 @@
-"use client";
-
 import { ChangeEvent, useMemo } from "react";
 
 export type VideoSubtitlesFC = React.FunctionComponent<{ subtitle?: number, subtitles: ReadonlySet<{ id: number, name: string }>, handle: (subtitle?: number) => void }>;

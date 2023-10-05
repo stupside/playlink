@@ -1,5 +1,3 @@
-"use client";
-
 import { ChangeEvent, useMemo } from "react";
 
 export type VideoAudiosFC = React.FunctionComponent<{ audio: number, audios: ReadonlySet<{ id: number, name: string }>, handle: (audio: number) => void }>;

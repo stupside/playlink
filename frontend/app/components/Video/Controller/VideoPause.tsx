@@ -1,5 +1,3 @@
-"use client";
-
 import { atom, useRecoilState } from "recoil";
 import { useVideo } from "../VideoProvider";
 import { useCallback, useEffect } from "react";

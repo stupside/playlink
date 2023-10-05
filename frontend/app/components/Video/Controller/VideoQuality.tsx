@@ -1,5 +1,3 @@
-"use client";
-
 import { TvIcon } from "@heroicons/react/24/solid";
 import { ChangeEvent, createContext, useCallback, useMemo } from "react";
 
@@ -18,6 +16,7 @@ const VideoQuality: VideoQualityFC = ({ quality, qualities, handle }) => {
         const id = event.currentTarget.value ? Number.parseInt(event.currentTarget.value) : undefined;
 
         handle(id);
+
     }, [handle]);
 
     const options = useMemo(() => {

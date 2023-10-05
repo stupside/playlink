@@ -1,6 +1,6 @@
 import { SpeakerWaveIcon, SpeakerXMarkIcon } from "@heroicons/react/24/solid";
-import { useCallback, useEffect, useState } from "react";
-import { useVideo } from "../VideoProvider";
+import { useState } from "react";
+import useVideoVolume from "~/hooks/video/useVideoVolume";
 
 const colors = {
     default: "bg-slate-100",
@@ -9,47 +9,11 @@ const colors = {
 
 const VideoVolume = () => {
 
-    const { video } = useVideo();
-
-    const [muted, setMuted] = useState(false);
-    const [volume, setVolume] = useState(0);
+    const { muted, volume, toggleMute, seekVolume } = useVideoVolume();
 
     const [soundFocused, setSoundFocused] = useState(false);
 
     const [holding, setHolding] = useState(false);
-
-    useEffect(() => {
-
-        if (video.current) {
-
-            setVolume(video.current.volume);
-            setMuted(video.current.muted);
-        }
-
-        const onVolumeChange = () => {
-
-            if (video?.current) {
-
-                setVolume(video.current.volume);
-                setMuted(video.current.muted);
-            }
-        };
-
-        video.current?.addEventListener("volumechange", onVolumeChange);
-
-        return () => {
-            video.current?.removeEventListener("volumechange", onVolumeChange);
-        }
-
-    }, [video.current, setVolume, setMuted]);
-
-    const toggleMute = useCallback(() => {
-
-        if (video.current) {
-
-            video.current.muted = !muted;
-        }
-    }, [video.current, muted]);
 
     return <div className="flex items-center w-1/3"
         onMouseEnter={() => {
@@ -78,10 +42,7 @@ const VideoVolume = () => {
 
                         const percent = getCursorPositionInDiv(clientX, currentTarget);
 
-                        if (video.current) {
-
-                            video.current.volume = Math.min(Math.max(percent, 0), 1);
-                        }
+                        seekVolume(percent);
                     }
                 }}
 
@@ -89,16 +50,13 @@ const VideoVolume = () => {
 
                     const percent = getCursorPositionInDiv(clientX, currentTarget);
 
-                    if (video.current) {
-
-                        video.current.volume = Math.min(Math.max(percent, 0), 1);
-                    }
+                    seekVolume(percent);
                 }}>
 
                 <div className={`absolute w-full h-2 ${colors.default} opacity-30 rounded-full`}></div>
 
                 <div className="absolute w-full flex items-center rounded-full">
-                    
+
                     <div
                         className={`h-2 ${colors.current} rounded-full`}
                         style={{ width: `${volume * 100}%` }}
