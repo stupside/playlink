@@ -1,34 +1,51 @@
 import { useState, useEffect } from "react";
 
-const Code = ({ qr, code, expiry }: { qr: string, code: string, expiry: number }) => {
+const Code = ({ qr, code, expiry, action }: { qr: string, code: string, expiry: number, action: JSX.Element }) => {
 
-    const [expiryTimeout, setExpiryTimeout] = useState<NodeJS.Timeout>();
+    const [remaining, setRemaining] = useState<number>(0);
 
     useEffect(() => {
 
-        const onTimeout = () => {
+        setRemaining(expiry);
 
-            console.debug("Code expired");
-        };
+        const interval = setInterval(() => {
 
-        setExpiryTimeout((old) => {
+            setRemaining((old) => {
 
-            if (old) {
+                return old - 1;
+            });
+        }, 1000);
 
-                old.refresh();
-            }
-            else {
+        const timeout = setTimeout(() => {
 
-                return setTimeout(onTimeout, expiry * 1000);
-            };
+            clearInterval(interval);
+        }, expiry * 1000);
 
-            return old;
-        });
+        return () => {
 
-    }, [setExpiryTimeout, expiry]);
+            clearInterval(interval);
+            clearTimeout(timeout);
+        }
+
+    }, [setRemaining, expiry, code]);
 
     return <div>
-        <img src={qr} title={code} className="w-64 h-64 rounded-xl border-2 border-black" />
+        <div className="flex justify-end my-3 mx-2">
+            <div className="flex items-center ">
+                <div className="mx-3">
+                    {remaining > 0
+                        ? <p className="text-white font-bold">{remaining}s</p>
+                        : <p className="text-white font-bold">Expired</p>
+                    }
+                </div>
+                <div>
+                    {action}
+                </div>
+            </div>
+        </div>
+        <div className="rounded-xl border-2 border-black overflow-hidden">
+            <img src={qr} title={"QR Code"} alt={code} className="w-48 h-48 bg-white" />
+        </div>
     </div>
 };
 

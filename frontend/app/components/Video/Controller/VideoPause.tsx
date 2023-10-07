@@ -19,10 +19,6 @@ const VideoPause = () => {
 
         const { current } = video;
 
-        if (current) {
-            setPaused(current.paused);
-        }
-
         const onPause = () => {
             setPaused(true);
         };
