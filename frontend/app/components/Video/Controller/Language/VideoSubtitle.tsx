@@ -1,14 +1,15 @@
-import { ChangeEvent, useMemo } from "react";
+import { ChangeEvent, FC, useMemo } from "react";
+import useVideoLanguage from "~/hooks/video/useVideoLanguage";
 
-export type VideoSubtitlesFC = React.FunctionComponent<{ subtitle?: number, subtitles: ReadonlySet<{ id: number, name: string }>, handle: (subtitle?: number) => void }>;
+const VideoSubtitle: FC = () => {
 
-const VideoSubtitles: VideoSubtitlesFC = ({ subtitle, subtitles, handle }) => {
+    const { subtitle, subtitles, changeSubtitle } = useVideoLanguage.useVideoSubtitle();
 
     const onChange = (event: ChangeEvent<HTMLSelectElement>) => {
 
         const id = event.currentTarget.value ? Number.parseInt(event.currentTarget.value) : undefined;
 
-        handle(id);
+        changeSubtitle(id);
     };
 
     const options = useMemo(() => {
@@ -23,4 +24,4 @@ const VideoSubtitles: VideoSubtitlesFC = ({ subtitle, subtitles, handle }) => {
     </div>
 };
 
-export default VideoSubtitles;
+export default VideoSubtitle;

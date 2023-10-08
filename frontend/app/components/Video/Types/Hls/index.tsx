@@ -1,10 +1,7 @@
-"use client";
-
-import { createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
+import { createContext, useContext, useEffect, useMemo } from "react";
 
 import Hls, { HlsConfig } from "hls.js";
-
-import { useVideo } from "../../VideoProvider";
+import { useVideo } from "~/hooks/video/useVideo";
 
 interface IVideoHlsContext {
     hls: Hls
@@ -37,7 +34,8 @@ const VideoHlsProvider = ({ children, config }: { children: React.ReactNode, con
     return <>
         {hls
             ? <VideoHlsContext.Provider value={{ hls }}>{children}</VideoHlsContext.Provider>
-            : <div>HLS is not supported</div>}
+            : <div>HLS is not supported</div>
+        }
     </>
 };
 

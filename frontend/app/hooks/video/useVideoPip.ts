@@ -1,7 +1,7 @@
 import { useCallback } from "react";
-import { useVideo } from "~/components/Video/VideoProvider";
+import { useVideo } from "./useVideo";
 
-const useVideoPictureInPicture = () => {
+const useVideoPip = () => {
 
     const { video } = useVideo();
 
@@ -17,4 +17,4 @@ const useVideoPictureInPicture = () => {
     return toggle;
 };
 
-export default useVideoPictureInPicture;
+export default useVideoPip;

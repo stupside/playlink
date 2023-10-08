@@ -1,8 +1,9 @@
-import { ChangeEvent, useMemo } from "react";
+import { ChangeEvent, FC, useMemo } from "react";
+import useVideoLanguage from "~/hooks/video/useVideoLanguage";
 
-export type VideoAudiosFC = React.FunctionComponent<{ audio: number, audios: ReadonlySet<{ id: number, name: string }>, handle: (audio: number) => void }>;
+const VideoAudio: FC = () => {
 
-const VideoAudios: VideoAudiosFC = ({ audio, audios, handle }) => {
+    const { audio, audios, changeAudio } = useVideoLanguage.useVideoAudio();
 
     const onChange = (event: ChangeEvent<HTMLSelectElement>) => {
 
@@ -10,7 +11,7 @@ const VideoAudios: VideoAudiosFC = ({ audio, audios, handle }) => {
 
         if (value) {
 
-            handle(Number.parseInt(value));
+            changeAudio(Number.parseInt(value));
         }
     };
 
@@ -26,4 +27,4 @@ const VideoAudios: VideoAudiosFC = ({ audio, audios, handle }) => {
     </div>
 };
 
-export default VideoAudios;
+export default VideoAudio;

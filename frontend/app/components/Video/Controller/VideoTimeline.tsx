@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { FC, useCallback, useState } from "react";
 import useVideoTimeline from "~/hooks/video/useVideoTimeline";
 
 const colors = {
@@ -6,9 +6,7 @@ const colors = {
     watched: "bg-red-600"
 };
 
-export type VideoTimelineFC = React.FunctionComponent<{}>;
-
-const VideoTimeline: VideoTimelineFC = () => {
+const VideoTimeline: FC = () => {
 
     const { duration, seekTimeline, timeline } = useVideoTimeline();
 

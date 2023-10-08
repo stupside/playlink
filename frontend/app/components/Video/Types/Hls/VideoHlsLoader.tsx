@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useVideoHls } from ".";
-import { useVideo } from "../../VideoProvider";
+import { useVideo } from "~/hooks/video/useVideo";
 
 export const VideoHlsLoader = () => {
 

@@ -1,14 +1,13 @@
 import { ArrowTopRightOnSquareIcon } from "@heroicons/react/20/solid";
+import useVideoPip from "~/hooks/video/useVideoPip";
 
-import useVideoPictureInPicture from "~/hooks/video/useVideoPictureInPicture";
+const VideoPip = () => {
 
-const VideoPictureInPicture = () => {
-
-    const toggle = useVideoPictureInPicture();
+    const toggle = useVideoPip();
 
     return <button id="pip" type="button" onClick={toggle}>
         <ArrowTopRightOnSquareIcon className="h-8 w-8 text-gray-300" />
     </button>;
 };
 
-export default VideoPictureInPicture;
+export default VideoPip;

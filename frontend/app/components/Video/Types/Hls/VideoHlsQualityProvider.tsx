@@ -1,11 +1,9 @@
-"use client";
-
-import { useCallback, useEffect, useState } from "react";
+import { FC, PropsWithChildren, useCallback, useEffect, useState } from "react";
 import { useVideoHls } from ".";
 import Hls from "hls.js";
-import { VideoQualityFC } from "../../Controller/VideoQuality";
+import VideoQualityContext from "../VideoQualityContext";
 
-export const VideoHlsQualityWrapper = ({ Controller }: { Controller: VideoQualityFC }) => {
+const VideoHlsQualityProvider: FC<PropsWithChildren> = ({ children }) => {
 
     const { hls } = useVideoHls();
 
@@ -30,7 +28,7 @@ export const VideoHlsQualityWrapper = ({ Controller }: { Controller: VideoQualit
 
     }, [hls.on, setQualities, setQuality]);
 
-    const handle = useCallback((quality?: number) => {
+    const changeQuality = useCallback((quality?: number) => {
 
         if (quality) {
 
@@ -39,10 +37,18 @@ export const VideoHlsQualityWrapper = ({ Controller }: { Controller: VideoQualit
             hls.currentLevel = index;
         }
         else {
-        
+
             hls.currentLevel = -1;
         }
     }, [hls, qualities]);
 
-    return <Controller quality={quality} qualities={qualities} handle={handle} />;
-}
+    return <VideoQualityContext.Provider value={{
+        quality,
+        qualities,
+        changeQuality
+    }}>
+        {children}
+    </VideoQualityContext.Provider>
+};
+
+export default VideoHlsQualityProvider;

@@ -1,13 +1,17 @@
-import { useState, useEffect } from "react";
-import { LinkType } from "./useLink";
+import { FC, PropsWithChildren, createContext, useContext, useEffect, useMemo, useState } from "react";
 
-const usePlayLinks = ({ session }: { session: number }) => {
+interface ISseContext {
+    source?: EventSource,
+    connected?: boolean
+}
+
+export const SseContext = createContext<ISseContext>({});
+
+const SseProvider: FC<{ session: number } & PropsWithChildren> = ({ session, children }) => {
 
     const [source, setSource] = useState<EventSource>();
 
     const [connected, setConnected] = useState<boolean>();
-
-    const [message, setMessage] = useState<{ id: number, type: LinkType, url: string }>();
 
     useEffect(() => {
 
@@ -47,34 +51,18 @@ const usePlayLinks = ({ session }: { session: number }) => {
 
             source?.removeEventListener("open", onOpen);
             source?.removeEventListener("error", onError);
-        }
-
-    }, [source, setConnected]);
-
-    useEffect(() => {
-
-        const onMessage = async (message: MessageEvent<string>) => {
-
-            const json = JSON.parse(message.data);
-
-            setMessage(json);
-        };
-
-        source?.addEventListener("message", (message) => {
-
-            onMessage(message);
-        });
-
-        return () => {
-
-            source?.removeEventListener("message", onMessage);
 
             source?.close();
         }
 
-    }, [source]);
+    }, [source, setConnected]);
 
-    return { link: message, connected };
+    return <SseContext.Provider value={{
+        source,
+        connected
+    }}>
+        {children}
+    </SseContext.Provider>
 };
 
-export default usePlayLinks;
+export default SseProvider;

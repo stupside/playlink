@@ -1,11 +1,11 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { FC, PropsWithChildren, useCallback, useEffect, useState } from "react";
 import { useVideoHls } from "..";
 import Hls from "hls.js";
-import { VideoSubtitlesFC } from "~/components/Video/Controller/i18n/VideoSubtitles";
+import VideoSubtitleContext from "../../VideoSubtitleContext";
 
-export const VideoHlsSubtitlesWrapper = ({ Controller }: { Controller: VideoSubtitlesFC }) => {
+const VideoHlsSubtitleProvider: FC<PropsWithChildren> = ({ children }) => {
 
     const { hls } = useVideoHls();
 
@@ -30,7 +30,7 @@ export const VideoHlsSubtitlesWrapper = ({ Controller }: { Controller: VideoSubt
 
     }, [hls.on, setSubtitle, setSubtitles]);
 
-    const handle = useCallback((subtitle?: number) => {
+    const changeSubtitle = useCallback((subtitle?: number) => {
         if (subtitle) {
 
             const index = Array.from(subtitles).findIndex(({ id }) => id === subtitle);
@@ -43,5 +43,13 @@ export const VideoHlsSubtitlesWrapper = ({ Controller }: { Controller: VideoSubt
         }
     }, [hls, subtitles]);
 
-    return <Controller subtitle={subtitle} subtitles={subtitles} handle={handle} />;
-}
+    return <VideoSubtitleContext.Provider value={{
+        subtitle,
+        subtitles,
+        changeSubtitle
+    }}>
+        {children}
+    </VideoSubtitleContext.Provider>
+};
+
+export default VideoHlsSubtitleProvider;

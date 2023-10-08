@@ -1,6 +1,6 @@
 import { useEffect, useCallback } from "react";
 import { atom, useRecoilState } from "recoil";
-import { useVideo } from "~/components/Video/VideoProvider";
+import { useVideo } from "./useVideo";
 
 const VideoState_Fullscreen = atom<boolean>({
     key: "VideoState_Fullscreen",

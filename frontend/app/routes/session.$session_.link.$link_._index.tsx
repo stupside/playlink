@@ -1,8 +1,7 @@
 import { ActionFunctionArgs, LoaderFunctionArgs, json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import Video from "~/components/Video";
-import { LinkType } from "~/hooks/useLink";
-
+import { LinkType } from "~/hooks/sse/useSse";
 
 export const action = async ({ params }: ActionFunctionArgs) => {
 }

@@ -1,17 +1,10 @@
-import VideoFullscreen from "./Controller/VideoFullscreen";
-import VideoPause from "./Controller/VideoPause";
-import VideoPictureInPicture from "./Controller/VideoPictureInPicture";
 import VideoQuality from "./Controller/VideoQuality";
-import VideoTimeline from "./Controller/VideoTimeline";
-import VideoVolume from "./Controller/VideoVolume";
-import VideoI18N from "./Controller/i18n";
-import VideoAudios from "./Controller/i18n/VideoAudios";
-import VideoSubtitles from "./Controller/i18n/VideoSubtitles";
 import VideoHlsProvider from "./Types/Hls";
 import { VideoHlsLoader } from "./Types/Hls/VideoHlsLoader";
-import { VideoHlsQualityWrapper } from "./Types/Hls/VideoHlsQualityWrapper";
-import { VideoHlsAudiosWrapper } from "./Types/Hls/i18n/VideoHlsAudiosWrapper";
-import { VideoHlsSubtitlesWrapper } from "./Types/Hls/i18n/VideoHlsSubtitlesWrapper";
+import Video from ".";
+import VideoHlsQualityProvider from "./Types/Hls/VideoHlsQualityProvider";
+import VideoHlsSubtitleProvider from "./Types/Hls/Language/VideoHlsSubtitleProvider";
+import VideoHlsAudioProvider from "./Types/Hls/Language/VideoHlsAudioProvider";
 
 const VideoHls = () => {
 
@@ -21,35 +14,18 @@ const VideoHls = () => {
             <VideoHlsLoader />
         </div>
 
-        <div className="absolute bottom-0 flex flex-col w-full ">
+        <Video.Controller Actions={
+            <>
+                <VideoHlsQualityProvider>
+                    <VideoQuality />
+                </VideoHlsQualityProvider>
 
-            <div className="mx-4">
-                <VideoTimeline />
-            </div>
-
-            <div className="flex flex-row justify-between mx-16 my-3">
-
-                <div className="flex flex-row flex-grow gap-5">
-                    <VideoPause />
-                    <VideoVolume />
-                </div>
-
-                <div className="flex flex-row gap-5">
-
-                    <VideoHlsQualityWrapper Controller={VideoQuality} />
-
-                    <VideoI18N
-                        subtitles={<VideoHlsSubtitlesWrapper Controller={VideoSubtitles} />}
-                        audios={<VideoHlsAudiosWrapper Controller={VideoAudios} />}
-                    />
-
-                    <VideoPictureInPicture />
-                    <VideoFullscreen />
-                </div>
-            </div>
-
-
-        </div>
+                <Video.Controller.Language
+                    SubtitleProvider={VideoHlsSubtitleProvider}
+                    AudioProvider={VideoHlsAudioProvider}
+                />
+            </>
+        } />
 
     </VideoHlsProvider>;
 };

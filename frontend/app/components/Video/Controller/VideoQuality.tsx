@@ -1,23 +1,18 @@
 import { TvIcon } from "@heroicons/react/24/solid";
-import { ChangeEvent, createContext, useCallback, useMemo } from "react";
+import { ChangeEvent, FC, createContext, useCallback, useMemo } from "react";
+import { useVideoQuality } from "~/hooks/video/useVideoQuality";
 
-export type VideoQualityFC = React.FunctionComponent<{
-    quality?: number,
-    qualities: ReadonlySet<{
-        id: number, name: string
-    }>,
-    handle: (subtitle?: number) => void
-}>;
+const VideoQuality: FC = () => {
 
-const VideoQuality: VideoQualityFC = ({ quality, qualities, handle }) => {
+    const { qualities, changeQuality } = useVideoQuality();
 
     const onChange = useCallback((event: ChangeEvent<HTMLSelectElement>) => {
 
         const id = event.currentTarget.value ? Number.parseInt(event.currentTarget.value) : undefined;
 
-        handle(id);
+        changeQuality(id);
 
-    }, [handle]);
+    }, [changeQuality]);
 
     const options = useMemo(() => {
         return Array.from(qualities).map(({ id, name }) => <option key={id} value={id}>{name}</option>)

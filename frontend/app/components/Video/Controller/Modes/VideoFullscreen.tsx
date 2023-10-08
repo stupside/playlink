@@ -9,9 +9,13 @@ const VideoFullscreen = () => {
 
     return <button id="fullscreen" type="button" onClick={toggle}>
         {fullscreen
-            ? <ArrowsPointingInIcon className="h-8 w-8 text-gray-300" />
-            : <ArrowsPointingOutIcon className="h-8 w-8 text-gray-300" />}
+            ? <Off />
+            : <On />
+        }
     </button>;
 };
+
+const Off = () => <ArrowsPointingInIcon className="h-8 w-8 text-gray-300" />;
+const On = () => <ArrowsPointingOutIcon className="h-8 w-8 text-gray-300" />;
 
 export default VideoFullscreen;

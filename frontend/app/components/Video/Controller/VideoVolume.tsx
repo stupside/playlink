@@ -11,18 +11,9 @@ const VideoVolume = () => {
 
     const { muted, volume, toggleMute, seekVolume } = useVideoVolume();
 
-    const [soundFocused, setSoundFocused] = useState(false);
-
     const [holding, setHolding] = useState(false);
 
-    return <div className="flex items-center w-1/3"
-        onMouseEnter={() => {
-            setSoundFocused(true);
-        }}
-        onMouseLeave={() => {
-            setSoundFocused(false);
-        }}
-    >
+    return <div className="flex items-center w-1/3">
 
         <button id="mute" type="button" onClick={toggleMute}>
             {muted

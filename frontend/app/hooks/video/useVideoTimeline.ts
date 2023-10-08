@@ -1,6 +1,6 @@
 import { useEffect, useCallback, useMemo } from "react";
 import { atom, useRecoilState } from "recoil";
-import { useVideo } from "~/components/Video/VideoProvider";
+import { useVideo } from "./useVideo";
 
 const VideoState_Timeline = atom<number>({
     key: "VideoState_Timeline",
