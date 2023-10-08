@@ -5,7 +5,9 @@ const usePlayLinks = ({ session }: { session: number }) => {
 
     const [source, setSource] = useState<EventSource>();
 
-    const [message, setMessage] = useState<{ type: LinkType, url: string }>();
+    const [connected, setConnected] = useState<boolean>();
+
+    const [message, setMessage] = useState<{ id: number, type: LinkType, url: string }>();
 
     useEffect(() => {
 
@@ -26,7 +28,28 @@ const usePlayLinks = ({ session }: { session: number }) => {
             return new EventSource(href);
         });
 
-    }, [session]);
+    }, [session, setSource, setConnected]);
+
+    useEffect(() => {
+
+        const onOpen = () => {
+            setConnected(true);
+        }
+
+        const onError = () => {
+            setConnected(source?.readyState === source?.OPEN);
+        }
+
+        source?.addEventListener("open", onOpen);
+        source?.addEventListener("error", onError);
+
+        return () => {
+
+            source?.removeEventListener("open", onOpen);
+            source?.removeEventListener("error", onError);
+        }
+
+    }, [source, setConnected]);
 
     useEffect(() => {
 
@@ -51,7 +74,7 @@ const usePlayLinks = ({ session }: { session: number }) => {
 
     }, [source]);
 
-    return message;
+    return { link: message, connected };
 };
 
 export default usePlayLinks;

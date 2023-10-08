@@ -59,7 +59,7 @@ const route = async (fastify: FastifyInstance) => {
 
                 const type = "message";
 
-                const data = { type: link.type, url: link.url };
+                const data = { id: link.id, type: link.type, url: link.url };
 
                 const event = `event: ${type}\ndata: ${JSON.stringify(data)}\n\n`;
 
