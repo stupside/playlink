@@ -8,7 +8,9 @@ export const action = async ({ params }: ActionFunctionArgs) => {
 
 export const loader = async ({ params }: LoaderFunctionArgs) => {
 
-    const response = await fetch(`/session/${params.session}/link/${params.link}`);
+    const response = await fetch(`http://localhost:3000/session/${params.session}/link/${params.link}`, {
+        method: "GET"
+    });
 
     const { url, type } = await response.json();
 

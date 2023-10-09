@@ -8,6 +8,7 @@ import {
 import type { LinksFunction } from "@remix-run/node";
 
 import styles from "./tailwind.css";
+import { RecoilRoot } from "recoil";
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: styles },
@@ -26,7 +27,9 @@ const App = () => {
       </head>
       <body className="flex min-h-screen w-full flex-col overflow-x-hidden bg-white text-gray-900 dark:bg-gray-900 dark:text-gray-200">
 
-        <Outlet />
+        <RecoilRoot>
+          <Outlet />
+        </RecoilRoot>
 
         <Scripts />
       </body>

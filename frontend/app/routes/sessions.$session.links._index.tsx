@@ -1,10 +1,8 @@
 import { LoaderFunctionArgs, ActionFunctionArgs, json } from "@remix-run/node";
 import { useFetcher, useLoaderData } from "@remix-run/react";
 import Code from "~/components/Code";
-import CodeExpiry from "~/components/Code/CodeExpiry";
 
 import Sse from "~/components/Sse";
-import SseProvider from "~/components/Sse/SseProvider";
 
 
 export const action = async ({ params }: ActionFunctionArgs) => {

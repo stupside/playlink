@@ -8,7 +8,7 @@ const SseLink = ({ session, url, link }: { session: number, url: string, link: n
 
     const play = useCallback(() => {
 
-        navigate(`/session/${session}/link/${link}`);
+        navigate(`/sessions/${session}/links/${link}`);
     }, [navigate, link, session]);
 
     return <div className="flex gap-3">

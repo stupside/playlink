@@ -31,8 +31,6 @@ const VideoController: FC<{ Actions: JSX.Element }> = ({ Actions }) => {
 
         clearTimeout(controlsTimeout.current);
 
-        controlsTimeout.current?.refresh();
-
         setShowControls(true);
 
         controlsTimeout.current = setTimeout(() => {

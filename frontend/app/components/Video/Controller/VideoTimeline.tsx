@@ -50,7 +50,7 @@ const VideoTimeline: FC = () => {
     return <div className="flex items-center">
 
         <div className="mx-5">
-            <TimeIndicator />
+            <TimeIndicator time={timeline} />
         </div>
 
         <div className="relative w-full flex items-center cursor-pointer"
@@ -85,18 +85,16 @@ const VideoTimeline: FC = () => {
         </div>
 
         <div className="mx-5">
-            <TimeIndicator />
+            <TimeIndicator time={duration} />
         </div>
 
     </div>;
 }
 
-const TimeIndicator = () => {
+const TimeIndicator: FC<{ time: number }> = ({ time }) => {
 
-    const { timeline } = useVideoTimeline();
-
-    const minutes = Number((timeline / 60).toFixed());
-    const seconds = timeline % 60;
+    const minutes = Number((time / 60).toFixed());
+    const seconds = time % 60;
 
     const getDigits = (value: number) => value < 10 ? `0${value}` : value;
 
