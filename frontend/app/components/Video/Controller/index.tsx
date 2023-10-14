@@ -61,7 +61,7 @@ const VideoController: FC<{ Actions: JSX.Element }> = ({ Actions }) => {
     return <div
         id="controls"
         ref={controller}
-        className="absolute flex flex-col items-center justify-between w-full h-full bg-gradient-to-t from-black to-transparent cursor-auto select-none"
+        className="absolute flex flex-col items-center justify-end w-full h-full bg-gradient-to-t from-black to-transparent cursor-auto select-none"
         onMouseMove={openController}
         onMouseLeave={closeController}
         style={{
