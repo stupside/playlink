@@ -1,31 +1,40 @@
-import { TvIcon } from "@heroicons/react/24/solid";
-import { ChangeEvent, FC, createContext, useCallback, useMemo } from "react";
+import { CheckIcon, TvIcon } from "@heroicons/react/24/solid";
+import { ChangeEvent, FC, useState, useCallback, useMemo, MouseEventHandler } from "react";
 import { useVideoQuality } from "~/hooks/video/useVideoQuality";
+import VideoPortal from "./VideoPortal";
 
 const VideoQuality: FC = () => {
 
-    const { qualities, changeQuality } = useVideoQuality();
+    const { quality, qualities, changeQuality } = useVideoQuality();
 
-    const onChange = useCallback((event: ChangeEvent<HTMLSelectElement>) => {
+    const [open, setOpen] = useState(false);
 
-        const id = event.currentTarget.value ? Number.parseInt(event.currentTarget.value) : undefined;
+    const onClick: MouseEventHandler<HTMLButtonElement> = (event) => {
 
-        changeQuality(id);
+        const value = event.currentTarget.value;
 
-    }, [changeQuality]);
+        changeQuality(Number.parseInt(value));
+    };
 
-    const options = useMemo(() => {
-        return Array.from(qualities).map(({ id, name }) => <option key={id} value={id}>{name}</option>)
-    }, [qualities]);
-
-    return <div className="flex">
-        <button type="button">
-            <TvIcon className="h-8 w-8 text-gray-300" />
+    return <div>
+        <button type="button" className="flex items-center text-gray-300" onClick={() => {
+            setOpen((opened) => !opened);
+        }}>
+            <TvIcon className="h-6 w-6" />
+            <span>Quality</span>
         </button>
-        <select title="quality" id="quality" onChange={onChange}>
-            <option>Auto</option>
-            {options}
-        </select>
+        {open && <VideoPortal>
+            <div className="flex flex-col">
+                <div className="mb-3 font-bold text-lg">Audio</div>
+                <ul id="qualities" className="mx-1">
+                    {Array.from(qualities).map(({ id, name }) =>
+                        <li key={name} className="flex items-center gap-3 my-1">
+                            <button className="p-2 hover:bg-slate-200 rounded-lg" value={id} onClick={onClick}>{name}</button> {id === quality && <CheckIcon className="w-4 h-4" />}
+                        </li>
+                    )}
+                </ul>
+            </div>
+        </VideoPortal>}
     </div>
 };
 

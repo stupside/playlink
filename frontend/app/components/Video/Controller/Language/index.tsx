@@ -1,22 +1,36 @@
-import { GlobeAmericasIcon } from "@heroicons/react/24/solid"
-import { FC, PropsWithChildren } from "react";
+import { ChatBubbleLeftRightIcon } from "@heroicons/react/24/solid"
+import { FC, PropsWithChildren, useState } from "react";
 import VideoAudio from "./VideoAudio";
 import VideoSubtitle from "./VideoSubtitle";
+import VideoPortal from "../VideoPortal";
 
 const VideoLanguage: FC<{ AudioProvider: FC<PropsWithChildren>, SubtitleProvider: FC<PropsWithChildren> }> = ({ AudioProvider, SubtitleProvider }) => {
 
+    const [open, setOpen] = useState(false);
+
     return <div className="flex">
-        <button type="button">
-            <GlobeAmericasIcon className="h-8 w-8 text-gray-300" />
+        <button type="button" className="flex items-center text-gray-300" onClick={() => {
+            setOpen((opened) => !opened);
+        }}>
+            <ChatBubbleLeftRightIcon className="h-6 w-6" />
+            <span>Audio & Subtitles</span>
         </button>
-        <div>
-            <AudioProvider>
-                <VideoAudio />
-            </AudioProvider>
-            <SubtitleProvider>
-                <VideoSubtitle />
-            </SubtitleProvider>
-        </div>
+        {open &&
+            <VideoPortal>
+                <div className="flex flex-col">
+                    <div className="mb-3 font-bold text-lg">Audio</div>
+                    <AudioProvider>
+                        <VideoAudio />
+                    </AudioProvider>
+                </div>
+                <div className="flex flex-col">
+                    <div className="mb-3 font-bold text-lg">Subtitle</div>
+                    <SubtitleProvider>
+                        <VideoSubtitle />
+                    </SubtitleProvider>
+                </div>
+            </VideoPortal>
+        }
     </div>
 };
 

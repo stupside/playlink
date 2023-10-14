@@ -17,7 +17,7 @@ const VideoProvider = ({ url, children }: { url: string, children: React.ReactNo
 
         <video
             src={url}
-            className="max-h-screen cursor-none"
+            className="max-h-screen cursor-none w-full"
             ref={video}
         />
 

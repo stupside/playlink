@@ -4,7 +4,7 @@ import useVideoVolume from "~/hooks/video/useVideoVolume";
 
 const colors = {
     default: "bg-slate-100",
-    current: "bg-red-600"
+    current: "bg-white"
 };
 
 const VideoVolume = () => {

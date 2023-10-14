@@ -3,7 +3,7 @@ import useVideoTimeline from "~/hooks/video/useVideoTimeline";
 
 const colors = {
     notwatched: "bg-slate-100",
-    watched: "bg-red-600"
+    watched: "bg-white"
 };
 
 const VideoTimeline: FC = () => {

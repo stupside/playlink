@@ -24,7 +24,7 @@ const PageComponent = () => {
 
     const { url, type } = useLoaderData<typeof loader>();
 
-    return <div className="flex min-h-screen items-center align-middle bg-black">
+    return <div className="flex flex-grow items-center align-middle bg-black">
         <Video url={url} type={type} />
     </div>
 };

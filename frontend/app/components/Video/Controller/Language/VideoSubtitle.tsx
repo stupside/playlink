@@ -1,27 +1,27 @@
-import { ChangeEvent, FC, useMemo } from "react";
+import { CheckIcon } from "@heroicons/react/24/solid";
+import { FC, MouseEventHandler } from "react";
 import useVideoLanguage from "~/hooks/video/useVideoLanguage";
 
 const VideoSubtitle: FC = () => {
 
     const { subtitle, subtitles, changeSubtitle } = useVideoLanguage.useVideoSubtitle();
 
-    const onChange = (event: ChangeEvent<HTMLSelectElement>) => {
+    const onClick: MouseEventHandler<HTMLButtonElement> = (event) => {
 
-        const id = event.currentTarget.value ? Number.parseInt(event.currentTarget.value) : undefined;
+        const value = event.currentTarget.value;
 
-        changeSubtitle(id);
+        changeSubtitle(Number.parseInt(value));
     };
 
-    const options = useMemo(() => {
-        return Array.from(subtitles).map(({ id, name }) => <option key={subtitle} value={id}>{name}</option>);
-    }, [subtitles])
-
     return <div>
-        <select title="subtitles" id="subtitles" onChange={onChange}>
-            <option>Disabled</option>
-            {options}
-        </select>
-    </div>
+        <ul id="subtitles" className="mx-1">
+            {Array.from(subtitles).map(({ id, name }) =>
+                <li key={name} className="flex items-center gap-3 my-1">
+                    <button className="p-2 hover:bg-slate-200 rounded-lg" value={id} onClick={onClick}>{name}</button> {subtitle === id && <CheckIcon className="w-4 h-4" />}
+                </li>
+            )}
+        </ul>
+    </div>;
 };
 
 export default VideoSubtitle;

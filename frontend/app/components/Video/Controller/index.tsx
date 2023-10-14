@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback, FC, PropsWithChildren, useEffect } from "react";
+import { useState, useRef, useCallback, FC, useEffect } from "react";
 import VideoFullscreen from "./Modes/VideoFullscreen";
 import VideoPause from "./VideoPause";
 import VideoQuality from "./VideoQuality";
@@ -8,42 +8,46 @@ import VideoLanguage from "./Language";
 import { useVideo } from "~/hooks/video/useVideo";
 import VideoPip from "./Modes/VideoPip";
 import VideoModes from "./Modes";
+import VideoControllerContext from "../Types/VideoControllerContext";
 
 const timeout = 5;
 
 const VideoController: FC<{ Actions: JSX.Element }> = ({ Actions }) => {
 
-    const [showControls, setShowControls] = useState(false);
-
     const { video } = useVideo();
 
-    const controlsTimeout = useRef<NodeJS.Timeout>();
+    const controller = useRef<HTMLDivElement>(null);
+    const portal = useRef<HTMLDivElement>(null);
 
-    const onLeaveControls = useCallback(() => {
+    const [visible, setVisible] = useState(false);
 
-        clearTimeout(controlsTimeout.current);
+    const closeTimeout = useRef<NodeJS.Timeout>();
 
-        setShowControls(false);
+    const closeController = useCallback(() => {
 
-    }, [setShowControls, controlsTimeout.current]);
+        clearTimeout(closeTimeout.current);
 
-    const delayCloseControls = useCallback(() => {
+        setVisible(false);
 
-        clearTimeout(controlsTimeout.current);
+    }, [setVisible, closeTimeout.current]);
 
-        setShowControls(true);
+    const openController = useCallback(() => {
 
-        controlsTimeout.current = setTimeout(() => {
+        clearTimeout(closeTimeout.current);
 
-            setShowControls(false);
+        setVisible(true);
+
+        closeTimeout.current = setTimeout(() => {
+
+            setVisible(false);
         }, timeout * 1000);
 
-    }, [setShowControls, controlsTimeout.current, timeout]);
+    }, [setVisible, closeTimeout.current, timeout]);
 
     useEffect(() => {
 
         const onMouseMove = () => {
-            delayCloseControls();
+            openController();
         };
 
         video.current?.addEventListener("mousemove", onMouseMove);
@@ -52,37 +56,49 @@ const VideoController: FC<{ Actions: JSX.Element }> = ({ Actions }) => {
 
             video.current?.removeEventListener("mousemove", onMouseMove);
         }
-    }, [video, delayCloseControls]);
+    }, [video, openController]);
 
     return <div
         id="controls"
-        hidden={showControls === false}
-        className="fixed top-0 left-0 w-full h-full bg-gradient-to-t from-black to-transparent cursor-auto select-none"
-        onMouseMove={delayCloseControls}
-        onMouseLeave={onLeaveControls}
+        ref={controller}
+        className="absolute flex flex-col items-center justify-between w-full h-full bg-gradient-to-t from-black to-transparent cursor-auto select-none"
+        onMouseMove={openController}
+        onMouseLeave={closeController}
+        style={{
+            visibility: visible === false ? "hidden" : "visible"
+        }}
     >
-        <div className="absolute bottom-0 flex flex-col w-full">
+        <VideoControllerContext.Provider value={{
+            portal,
+            controller,
+            visible,
+            open: openController,
+            close: closeController,
+        }}>
+            <div ref={portal}></div>
+            <div className="flex flex-col w-full">
 
-            <div className="mx-4">
-                <VideoTimeline />
-            </div>
-
-            <div className="flex flex-row justify-between mx-16 my-3">
-
-                <div className="flex flex-row flex-grow gap-5">
-                    <VideoPause />
-                    <VideoVolume />
+                <div className="mx-4">
+                    <VideoTimeline />
                 </div>
 
-                <div className="flex flex-row gap-5">
+                <div className="flex flex-row justify-between mx-8 my-3">
 
-                    {Actions}
+                    <div className="flex flex-row flex-grow items-center gap-5">
+                        <VideoPause />
+                        <VideoVolume />
+                    </div>
 
-                    <VideoFullscreen />
-                    <VideoPip />
+                    <div className="flex flex-row items-center gap-5">
+
+                        {Actions}
+
+                        <VideoFullscreen />
+                        <VideoPip />
+                    </div>
                 </div>
             </div>
-        </div>
+        </VideoControllerContext.Provider>
     </div>
 };
 
