@@ -4,12 +4,13 @@
 	"private": true,
 	"sideEffects": false,
 	"scripts": {
-		"dev": "PORT=3010 remix dev",
+		"dev": "remix dev",
 		"build": "remix build",
 		"typecheck": "tsc"
 	},
 	"dependencies": {
 		"@heroicons/react": "^2.0.18",
+		"@noriginmedia/norigin-spatial-navigation": "^2.0.1",
 		"@remix-run/node": "^2.0.0",
 		"@remix-run/react": "^2.0.0",
 		"@remix-run/serve": "^2.0.0",

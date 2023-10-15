@@ -1,5 +1,6 @@
 import { ArrowsPointingInIcon } from "@heroicons/react/24/outline";
 import { ArrowsPointingOutIcon } from "@heroicons/react/24/outline";
+import norigin from "@noriginmedia/norigin-spatial-navigation";
 
 import useVideoFullscreen from "~/hooks/video/useVideoFullscreen";
 
@@ -7,7 +8,13 @@ const VideoFullscreen = () => {
 
     const { toggle, fullscreen } = useVideoFullscreen();
 
-    return <button id="fullscreen" type="button" onClick={toggle}>
+    const { ref } = norigin.useFocusable<HTMLButtonElement>({
+        onEnterPress: (element) => {
+            element.click();
+        }
+    });
+
+    return <button id="fullscreen" ref={ref} type="button" onClick={toggle}>
         {fullscreen
             ? <Off />
             : <On />

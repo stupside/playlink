@@ -1,9 +1,11 @@
+import norigin from "@noriginmedia/norigin-spatial-navigation";
 import { ActionFunctionArgs, redirect } from "@remix-run/node";
 import { Form } from "@remix-run/react";
+import { constants } from "~/constants";
 
 export const action = async ({ }: ActionFunctionArgs) => {
 
-    const response = await fetch("http://192.168.1.90:3000/session", {
+    const response = await fetch(`${constants.backend}/session`, {
         method: "POST",
         headers: {
             'Content-Type': 'application/json',
@@ -18,15 +20,21 @@ export const action = async ({ }: ActionFunctionArgs) => {
 
 const PageComponent = () => {
 
-    return <div className="flex min-h-screen items-center align-middle bg-black">
+    const { ref } = norigin.useFocusable<HTMLButtonElement>({
+        onEnterPress: (element) => {
+            element.click();
+        }
+    });
+
+    return <>
         <div className="m-auto">
             <Form method="post">
-                <button id="links" type="submit" className="block text-white font-bold">
-                    Session
+                <button id="links" ref={ref} type="submit" className="block text-white font-bold">
+                    Create a new session
                 </button>
             </Form>
         </div>
-    </div>;
+    </>;
 };
 
 export default PageComponent;

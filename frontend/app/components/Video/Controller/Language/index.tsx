@@ -3,13 +3,16 @@ import { FC, PropsWithChildren, useState } from "react";
 import VideoAudio from "./VideoAudio";
 import VideoSubtitle from "./VideoSubtitle";
 import VideoPortal from "../VideoPortal";
+import norigin from "@noriginmedia/norigin-spatial-navigation";
 
 const VideoLanguage: FC<{ AudioProvider: FC<PropsWithChildren>, SubtitleProvider: FC<PropsWithChildren> }> = ({ AudioProvider, SubtitleProvider }) => {
 
     const [open, setOpen] = useState(false);
 
+    const { ref } = norigin.useFocusable();
+
     return <div className="flex">
-        <button type="button" className="flex items-center text-gray-300" onClick={() => {
+        <button type="button" ref={ref} className="flex items-center text-gray-300" onClick={() => {
             setOpen((opened) => !opened);
         }}>
             <ChatBubbleLeftRightIcon className="h-6 w-6" />

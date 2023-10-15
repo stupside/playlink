@@ -1,4 +1,5 @@
 import { FC, PropsWithChildren, createContext, useContext, useEffect, useMemo, useState } from "react";
+import { constants } from "~/constants";
 
 interface ISseContext {
     source?: EventSource,
@@ -17,7 +18,7 @@ const SseProvider: FC<{ session: number } & PropsWithChildren> = ({ session, chi
 
         if (typeof window == "undefined") return;
 
-        const href = `http://192.168.1.90:3000/session/${session}/links`;
+        const href = `${constants.backend}/session/${session}/links`;
 
         setSource((old) => {
 

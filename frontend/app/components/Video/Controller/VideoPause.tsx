@@ -3,6 +3,7 @@ import { useCallback, useEffect } from "react";
 import { PlayIcon } from "@heroicons/react/24/solid";
 import { PauseIcon } from "@heroicons/react/24/solid";
 import { useVideo } from "~/hooks/video/useVideo";
+import norigin from "@noriginmedia/norigin-spatial-navigation";
 
 const VideoState_Paused = atom<boolean>({
     key: "VideoState_Paused",
@@ -12,6 +13,12 @@ const VideoState_Paused = atom<boolean>({
 const VideoPause = () => {
 
     const { video } = useVideo();
+
+    const { ref } = norigin.useFocusable<HTMLButtonElement>({
+        onEnterPress: (element) => {
+            element.click();
+        }
+    });
 
     const [paused, setPaused] = useRecoilState(VideoState_Paused);
 
@@ -49,11 +56,10 @@ const VideoPause = () => {
         }
     }, [video.current]);
 
-    return <button type="button" id="play" onClick={togglePaused}>
-        {
-            paused
-                ? <Play />
-                : <Pause />
+    return <button type="button" ref={ref} id="play" onClick={togglePaused}>
+        {paused
+            ? <Play />
+            : <Pause />
         }
     </button>
 };

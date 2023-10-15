@@ -1,4 +1,5 @@
 import { SpeakerWaveIcon, SpeakerXMarkIcon } from "@heroicons/react/24/solid";
+import norigin from "@noriginmedia/norigin-spatial-navigation";
 import { useState } from "react";
 import useVideoVolume from "~/hooks/video/useVideoVolume";
 
@@ -11,11 +12,13 @@ const VideoVolume = () => {
 
     const { muted, volume, toggleMute, seekVolume } = useVideoVolume();
 
+    const { ref } = norigin.useFocusable();
+
     const [holding, setHolding] = useState(false);
 
     return <div className="flex items-center w-1/3">
 
-        <button id="mute" type="button" onClick={toggleMute}>
+        <button id="mute" ref={ref} type="button" onClick={toggleMute}>
             {muted
                 ? <SpeakerXMarkIcon className="h-8 w-8 text-gray-300" />
                 : <SpeakerWaveIcon className="h-8 w-8 text-gray-300" />

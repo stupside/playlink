@@ -3,13 +3,14 @@ import { useFetcher, useLoaderData } from "@remix-run/react";
 import Code from "~/components/Code";
 
 import Sse from "~/components/Sse";
+import { constants } from "~/constants";
 
 
 export const action = async ({ params }: ActionFunctionArgs) => {
 
     const session = params.session;
 
-    const response = await fetch(`http://192.168.1.90:3000/session/${session}/code`, {
+    const response = await fetch(`${constants.backend}/session/${session}/code?expiry=${30}`, {
         method: "GET",
     });
 
@@ -28,8 +29,7 @@ const PageComponent = () => {
     const fetcher = useFetcher<typeof action>();
     const data = useLoaderData<typeof loader>();
 
-    return <div className="flex min-h-screen items-center align-middle bg-black">
-
+    return <>
         <Sse session={data.session}>
 
             <div className="fixed top-0 left-0">
@@ -57,7 +57,7 @@ const PageComponent = () => {
                 />
             </div>
         </Sse>
-    </div>;
+    </>;
 }
 
 export default PageComponent;
