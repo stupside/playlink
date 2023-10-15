@@ -3,7 +3,7 @@ import { Form } from "@remix-run/react";
 
 export const action = async ({ }: ActionFunctionArgs) => {
 
-    const response = await fetch("http://localhost:3000/session", {
+    const response = await fetch("http://192.168.1.90:3000/session", {
         method: "POST",
         headers: {
             'Content-Type': 'application/json',

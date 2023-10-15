@@ -17,7 +17,7 @@ const SseProvider: FC<{ session: number } & PropsWithChildren> = ({ session, chi
 
         if (typeof window == "undefined") return;
 
-        const href = `http://localhost:3000/session/${session}/links`;
+        const href = `http://192.168.1.90:3000/session/${session}/links`;
 
         setSource((old) => {
 

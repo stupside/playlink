@@ -9,7 +9,7 @@ export const action = async ({ params }: ActionFunctionArgs) => {
 
     const session = params.session;
 
-    const response = await fetch(`http://localhost:3000/session/${session}/code`, {
+    const response = await fetch(`http://192.168.1.90:3000/session/${session}/code`, {
         method: "GET",
     });
 
