@@ -1,22 +1,38 @@
-# Playlink
+```js
+export { }
 
-## TODO
+const pattern = /^(www:|http:|https:)\/\/(.*\.m3u8)/gm;
 
-### Technical
-- [ ] CSRF on /device/connect breaks
-- [ ] Link the frontend and the extension with the backend
-- [ ] Show the QR code on the frontend
-- [ ] Add a QR Code scanner to the extension
-- [ ] We keep track of socket connections with a dummy const value. This is dumb ?
+chrome.webRequest.onBeforeSendHeaders.addListener((details) => {
 
-### Architecural
-- [ ] Secrets are hardcoded
-- [ ] Github Actions / Gitlab CI
+    if (pattern.test(details.url)) {
 
-### Design
-- [ ] Brainstorm about the extension (design, how we want it to be used)
-- [ ] Brainstorm about the frontend (design, how we want it to be used)
+        const message = {
+            initiator: details.initiator,
+            url: details.url,
+            timestamp: details.timeStamp
+        };
 
-## GOOD TO HAVE ?
-- [ ] Add a way to input a code instead of scanning the QRCode
-- [ ] Feed the device with a Queue (playlist ?)
+        if (details.tabId >= 0) {
+            chrome.tabs.sendMessage(details.tabId, message);
+        }
+        else {
+            chrome.tabs.query({}, (tabs) => {
+
+                tabs.forEach((tab) => {
+
+                    if (tab.id) {
+
+                        chrome.tabs.sendMessage(tab.id, message);
+                    }
+                })
+            })
+        }
+    }
+
+    return {
+        cancel: false
+    };
+
+}, { urls: ["<all_urls>"] }, ["requestHeaders"]);
+```
