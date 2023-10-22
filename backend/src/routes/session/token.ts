@@ -38,6 +38,9 @@ const route = async (fastify: FastifyInstance) => {
         const session = await prisma.session.findUniqueOrThrow({
             where: {
                 id: Number(id)
+            },
+            select: {
+                id: true,
             }
         });
 

@@ -1,11 +1,10 @@
 import norigin from "@noriginmedia/norigin-spatial-navigation";
 import { ActionFunctionArgs, redirect } from "@remix-run/node";
 import { Form } from "@remix-run/react";
-import { constants } from "~/constants";
 
 export const action = async ({ }: ActionFunctionArgs) => {
 
-    const response = await fetch(`${constants.backend}/session`, {
+    const response = await fetch(`${process.env.BACKEN_URL}/session`, {
         method: "POST",
         headers: {
             'Content-Type': 'application/json',

@@ -18,7 +18,7 @@ interface Link extends RequestGenericInterface {
 
 const route = async (fastify: FastifyInstance) => {
 
-    fastify.post<Link>("/session/link", {
+    fastify.post<Link>("/session/play", {
         schema: {
             tags: [
                 "session"
@@ -39,6 +39,9 @@ const route = async (fastify: FastifyInstance) => {
         const session = await prisma.session.findUniqueOrThrow({
             where: {
                 id: payload.session
+            },
+            select: {
+                id: true,
             }
         });
 

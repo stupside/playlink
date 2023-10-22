@@ -7,13 +7,12 @@ import prisma from "../../../utils/prisma";
 
 export const Params = Type.Object({
     session: Type.Number(),
-    link: Type.Number(),
 });
 
-export const Reply = Type.Object({
+export const Reply = Type.Array(Type.Object({
     url: Type.String(),
     type: Type.String(),
-});
+}));
 
 type ParamsType = Static<typeof Params>;
 type ReplyType = Static<typeof Reply>;
@@ -25,12 +24,12 @@ interface Link extends RequestGenericInterface {
 
 const route = async (fastify: FastifyInstance) => {
 
-    fastify.get<Link>("/session/:session/link/:link", {
+    fastify.get<Link>("/session/:session/link", {
         schema: {
             tags: [
                 "session"
             ],
-            description: "Get a link by its id.",
+            description: "Get this links for the desired session.",
             params: Params,
             response: {
                 200: Reply
@@ -38,17 +37,17 @@ const route = async (fastify: FastifyInstance) => {
         }
     }, async (request, response) => {
 
-        const link = await prisma.link.findUniqueOrThrow({
+        const links = await prisma.link.findMany(({
             where: {
-                id: request.params.link,
                 sessionId: request.params.session
+            },
+            select: {
+                url: true,
+                type: true
             }
-        });
+        }));
 
-        response.code(200).send({
-            url: link.url,
-            type: link.type
-        });
+        response.code(200).send(links);
     });
 };
 

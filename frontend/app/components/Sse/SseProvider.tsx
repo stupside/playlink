@@ -1,5 +1,4 @@
 import { FC, PropsWithChildren, createContext, useContext, useEffect, useMemo, useState } from "react";
-import { constants } from "~/constants";
 
 interface ISseContext {
     source?: EventSource,
@@ -8,7 +7,7 @@ interface ISseContext {
 
 export const SseContext = createContext<ISseContext>({});
 
-const SseProvider: FC<{ session: number } & PropsWithChildren> = ({ session, children }) => {
+const SseProvider: FC<{ session: number, baseUrl: string } & PropsWithChildren> = ({ session, children, baseUrl }) => {
 
     const [source, setSource] = useState<EventSource>();
 
@@ -18,7 +17,7 @@ const SseProvider: FC<{ session: number } & PropsWithChildren> = ({ session, chi
 
         if (typeof window == "undefined") return;
 
-        const href = `${constants.backend}/session/${session}/links`;
+        const href = `${baseUrl}/session/${session}/sse`;
 
         setSource((old) => {
 

@@ -6,6 +6,7 @@ import { useCallback } from "react";
 const SseLink = ({ session, url, link }: { session: number, url: string, link: number }) => {
 
     const navigate = useNavigate();
+
     const { ref } = norigin.useFocusable();
 
     const play = useCallback(() => {

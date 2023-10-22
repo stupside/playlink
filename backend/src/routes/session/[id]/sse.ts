@@ -17,7 +17,7 @@ interface Links extends RequestGenericInterface {
 
 const route = async (fastify: FastifyInstance) => {
 
-    fastify.get<Links>("/session/:session/links", {
+    fastify.get<Links>("/session/:session/sse", {
         schema: {
             tags: [
                 "session"
@@ -30,6 +30,9 @@ const route = async (fastify: FastifyInstance) => {
         const session = await prisma.session.findUniqueOrThrow({
             where: {
                 id: request.params.session
+            },
+            select: {
+                id: true,
             }
         });
 
@@ -54,6 +57,11 @@ const route = async (fastify: FastifyInstance) => {
                 const link = await prisma.link.findUniqueOrThrow({
                     where: {
                         id: Number(message)
+                    },
+                    select: {
+                        id: true,
+                        type: true,
+                        url: true,
                     }
                 });
 

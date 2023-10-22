@@ -3,14 +3,12 @@ import { useFetcher, useLoaderData } from "@remix-run/react";
 import Code from "~/components/Code";
 
 import Sse from "~/components/Sse";
-import { constants } from "~/constants";
-
 
 export const action = async ({ params }: ActionFunctionArgs) => {
 
     const session = params.session;
 
-    const response = await fetch(`${constants.backend}/session/${session}/code?expiry=${30}`, {
+    const response = await fetch(`${process.env.BACKEN_URL}/session/${session}/code?expiry=${30}`, {
         method: "GET",
     });
 
@@ -21,7 +19,7 @@ export const action = async ({ params }: ActionFunctionArgs) => {
 
 export const loader = async ({ params }: LoaderFunctionArgs) => {
 
-    return json({ session: Number(params.session) });
+    return json({ session: Number(params.session), sseEndpoint: String(process.env.BACKEN_URL) });
 };
 
 const PageComponent = () => {
@@ -30,7 +28,7 @@ const PageComponent = () => {
     const data = useLoaderData<typeof loader>();
 
     return <>
-        <Sse session={data.session}>
+        <Sse session={data.session} baseUrl={data.sseEndpoint} >
 
             <div className="fixed top-0 left-0">
                 <div className="flex items-center m-4 gap-3">
