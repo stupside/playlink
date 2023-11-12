@@ -1,0 +1,43 @@
+{
+  "private": true,
+  "type": "module",
+  "name": "frontend",
+  "sideEffects": false,
+  "scripts": {
+    "build": "remix build",
+    "dev": "remix dev --manual",
+    "start": "remix-serve ./build/index.js",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@playlink/ui-zxing": "workspace:^",
+    "@playlink/ui-navigation": "workspace:^",
+    "@playlink/ui-typography": "workspace:^",
+    "@playlink/ui-interactible": "workspace:^",
+    "@playlink/ui-content-video": "workspace:^",
+    "@playlink/ui-content-video-hls": "workspace:^",
+    "@heroicons/react": "^2.1.1",
+    "@remix-run/node": "^2.4.1",
+    "@remix-run/react": "^2.4.1",
+    "@remix-run/serve": "^2.4.1",
+    "@sinclair/typebox": "^0.32.4",
+    "isbot": "^3.7.1",
+    "openapi-fetch": "^0.8.2",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "ua-parser-js": "^1.0.37"
+  },
+  "devDependencies": {
+    "@remix-run/dev": "^2.4.1",
+    "@types/react": "^18.2.46",
+    "@types/react-dom": "^18.2.18",
+    "@types/ua-parser-js": "^0.7.39",
+    "openapi-typescript": "^6.7.3",
+    "remix-flat-routes": "^0.6.4",
+    "tailwindcss": "^3.4.0",
+    "typescript": "^5.3.3"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
