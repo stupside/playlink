@@ -1,0 +1,45 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Session {
+  id Int @id @default(autoincrement())
+
+  devices   Device[] @relation()
+
+  contents  Content[]
+}
+
+model Device {
+  id Int @id @default(autoincrement())
+
+  name  String?
+
+  ip    String
+  agent String?
+
+  archived Boolean @default(false)
+
+  sessionId Int
+
+  session Session @relation(fields: [sessionId], references: [id])
+}
+
+model Content {
+  id Int @id @default(autoincrement())
+
+  type  String
+  value String
+
+  sessionId Int
+
+  session   Session @relation(fields: [sessionId], references: [id])
+}
