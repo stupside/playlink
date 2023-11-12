@@ -20,9 +20,7 @@ const useSse = <TEvent extends SseEvents>({
 }) => {
   const { source } = useContext(SseContext);
 
-  const [connected, setConnected] = useState<boolean>(
-    source?.readyState === source?.OPEN
-  );
+  const [connected, setConnected] = useState<boolean>(true);
 
   useEffect(() => {
     const onOpen = () => {

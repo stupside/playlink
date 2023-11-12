@@ -13,19 +13,18 @@ const Provider: FC<{ loader: string } & PropsWithChildren> = ({
   const source = useRef<EventSource>();
 
   useEffect(() => {
-    if (source.current?.readyState === undefined) {
-      console.debug("Sse", "event source loading", loader);
+    const sse = new EventSource(loader, { withCredentials: true });
 
-      source.current = new EventSource(loader, { withCredentials: true });
-    }
+    source.current = sse;
 
     return () => {
       source.current?.close();
     };
-  }, []);
+  }, [loader]);
 
   return (
     <SseContext.Provider
+      key={loader}
       value={{
         source: source.current,
       }}

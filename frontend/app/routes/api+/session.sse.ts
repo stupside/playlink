@@ -10,9 +10,10 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
     const proxy = new Request(url, request);
 
+    // The token is stored in a cookie. This is an attempt to proxy the sse endpoint. It's not suitable.
     proxy.headers.append(process.env.PLAYLINK_TOKEN_HEADER_KEY!, token.value);
 
-    return fetch(proxy);
+    return fetch(proxy, { signal: request.signal });
   });
 
   return sse;

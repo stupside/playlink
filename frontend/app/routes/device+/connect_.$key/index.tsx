@@ -63,7 +63,14 @@ const PageComponent: FC = () => {
     <Center>
       <div className="flex gap-5">
         <fetcher.Form method="POST">
-          <input hidden title="key" name="key" value={data.key} />
+          <input
+            hidden
+            readOnly
+            title="key"
+            name="key"
+            type="text"
+            value={data.key}
+          />
           <div className="flex flex-col gap-3">
             <div>
               <input
