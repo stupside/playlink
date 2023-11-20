@@ -335,7 +335,7 @@ packages:
     dependencies:
       '@fastify/error': 3.4.0
       '@lukeed/ms': 2.0.1
-      fast-jwt: 3.3.1
+      fast-jwt: 3.3.2
       fastify-plugin: 4.5.1
       steed: 1.1.3
     dev: false
@@ -1032,8 +1032,8 @@ packages:
       rfdc: 1.3.0
     dev: false
 
-  /fast-jwt@3.3.1:
-    resolution: {integrity: sha512-1YuuIJeh1hEvfcYDe89P2oGACWI5hd2GadRDKHalSxkc1Z0z8I6yzuVK6SF15sW09QZngTV6d7g4+TFL9bvs5A==}
+  /fast-jwt@3.3.2:
+    resolution: {integrity: sha512-H+JYxaFy2LepiC1AQWM/2hzKlQOWaWUkEnu/yebhYu4+ameb3qG77WiRZ1Ct6YBk6d/ESsNguBfTT5+q0XMtKg==}
     engines: {node: '>=16 <22'}
     dependencies:
       '@lukeed/ms': 2.0.1
