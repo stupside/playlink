@@ -8,12 +8,12 @@ import { apiClient } from "~/server/api.server";
 
 const Loader = Type.Object({
   type: Type.Enum({
-    text: "text",
-    video: "video",
-    image: "image",
+    text: "TEXT",
+    video: "VIDEO",
+    image: "IMAGE",
   }),
   value: Type.String(),
-  subtype: Type.Optional(Type.String()),
+  subtype: Type.String(),
 });
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {

@@ -10,12 +10,18 @@ datasource db {
   url      = env("PLAYLINK_DATABASE_URL")
 }
 
+enum ContentType {
+  TEXT
+  IMAGE
+  VIDEO
+}
+
 model Session {
   id Int @id @default(autoincrement())
 
-  devices   Device[] @relation()
+  devices Device[] @relation()
 
-  contents  Content[] @relation()
+  contents Content[] @relation()
 }
 
 model Device {
@@ -32,12 +38,12 @@ model Device {
 model Content {
   id Int @id @default(autoincrement())
 
-  type  String
-  subtype String?
+  type    ContentType
+  subtype String
 
   value String
 
   sessionId Int
 
-  session   Session @relation(fields: [sessionId], references: [id])
+  session Session @relation(fields: [sessionId], references: [id])
 }

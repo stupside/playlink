@@ -8,14 +8,10 @@ const Params = Type.Object({
 
 const Reply = Type.Object({
   value: Type.String({ description: "The value of the content." }),
-  type: Type.String({
-    description: "The type of the content.",
+  type: Type.String({ description: "The type of the content." }),
+  subtype: Type.String({
+    description: "The handler of the content.",
   }),
-  subtype: Type.Optional(
-    Type.String({
-      description: "The subtype of the content.",
-    }),
-  ),
 });
 
 export interface Interface extends RouteGenericInterface {

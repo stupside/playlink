@@ -8,7 +8,9 @@ const REGEX = (ext: string) =>
 chrome.webRequest.onBeforeSendHeaders.addListener(
   ({ url, initiator }) => {
     // get ext of url
-    const matches = url.match(REGEX("(mp4|m3u8)"));
+    const matches = url.match(
+      REGEX(`(mp4|webm|ogg|mov|avi|wmv|flv|mkv|3gp|mpg|mpeg|vob|ogv)`),
+    );
 
     if (!matches) return {};
 

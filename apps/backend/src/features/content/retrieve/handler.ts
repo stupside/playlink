@@ -25,6 +25,6 @@ export const Handler: MyRoute<Interface> =
     return await response.send({
       value: content.value,
       type: content.type,
-      subtype: content.subtype ?? undefined,
+      subtype: content.subtype,
     });
   };

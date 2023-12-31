@@ -11,7 +11,7 @@ const PageComponent: FC = () => {
     connector: {
       event: "/content/cast",
       handler: async ({ id, type }) => {
-        navigate(`/app/displayer/cast/${id}/${type}`, {
+        navigate(`/app/displayer/cast/${id}/${type.toLowerCase()}`, {
           replace: true,
         });
       },

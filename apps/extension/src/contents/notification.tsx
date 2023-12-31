@@ -22,7 +22,7 @@ type Message = {
   content: {
     value: string;
     type: string;
-    subtype: string;
+    handler: string;
   };
 };
 
@@ -76,7 +76,7 @@ const Notification: FC = () => {
               <article>
                 <h1 className="text-zinc-500">{message.initiator}</h1>
                 <h2 className="text-zinc-400">
-                  {message.content.type}/{message.content.subtype}
+                  {message.content.type}/{message.content.handler}
                 </h2>
               </article>
               <button

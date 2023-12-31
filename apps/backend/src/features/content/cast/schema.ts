@@ -2,22 +2,14 @@ import { type FastifySchema, type RouteGenericInterface } from "fastify";
 
 import { type Static, Type } from "@sinclair/typebox";
 
-enum ContentType {
-  Video = "video",
-  Text = "text",
-  Image = "image",
-}
+import { ContentType } from "@prisma/client";
 
 const Body = Type.Object({
   value: Type.String({ description: "The value of the content." }),
   type: Type.Enum(ContentType, {
     description: "The type of the content.",
   }),
-  subtype: Type.Optional(
-    Type.String({
-      description: "The subtype of the content.",
-    }),
-  ),
+  subtype: Type.String({ description: "The subtype of the content." }),
 });
 
 export interface Interface extends RouteGenericInterface {

@@ -14,9 +14,9 @@ export interface paths {
             /** @description The value of the content. */
             value: string;
             /** @description The type of the content. */
-            type: "video" | "text" | "image";
+            type: "TEXT" | "IMAGE" | "VIDEO";
             /** @description The subtype of the content. */
-            subtype?: string;
+            subtype: string;
           };
         };
       };
@@ -46,8 +46,8 @@ export interface paths {
               value: string;
               /** @description The type of the content. */
               type: string;
-              /** @description The subtype of the content. */
-              subtype?: string;
+              /** @description The handler of the content. */
+              subtype: string;
             };
           };
         };
