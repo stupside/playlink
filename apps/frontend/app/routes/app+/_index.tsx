@@ -18,7 +18,7 @@ const PageComponent: FC = () => {
         <h1 className="text-3xl font-bold text-center text-zinc-200 mb-6">
           What would you like to do?
         </h1>
-        <FocusableBoundary lock>
+        <FocusableBoundary focus lock>
           {({ ref }) => (
             <div ref={ref} className="flex flex-col gap-y-3">
               <Navigation title="Cast" to="/app/caster/connect" />

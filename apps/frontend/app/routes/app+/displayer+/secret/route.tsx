@@ -59,7 +59,7 @@ const PageComponent: FC = () => {
       <Header>
         <Logo />
       </Header>
-      <FocusableBoundary lock>
+      <FocusableBoundary focus lock>
         {({ ref }) => (
           <section ref={ref} className="flex items-center gap-x-24 m-auto">
             <article className="flex flex-col gap-y-6">

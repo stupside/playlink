@@ -21,7 +21,7 @@ const PageComponent: FC = () => {
       <Header>
         <Logo />
       </Header>
-      <FocusableBoundary lock>
+      <FocusableBoundary focus lock>
         {({ ref }) => (
           <section
             ref={ref}
