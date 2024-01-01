@@ -22,7 +22,7 @@ const Loader = Type.Object({
   content: Type.String(),
 });
 
-const loader = async ({ request, params }: LoaderFunctionArgs) => {
+export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const { token } = await storage.fromCookies(request, async (session) =>
     storage.requireValue(session, "context"),
   );
