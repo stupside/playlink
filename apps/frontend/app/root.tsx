@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 
-import { Links, LiveReload, Meta, Outlet, Scripts } from "@remix-run/react";
+import { Links, LiveReload, Meta, Outlet, Scripts, ScrollRestoration } from "@remix-run/react";
 
 import { type LinksFunction, type MetaFunction } from "@remix-run/node";
 
@@ -61,6 +61,7 @@ const App = () => {
         <Outlet />
         <Scripts />
         <LiveReload />
+        <ScrollRestoration />
       </body>
     </html>
   );
