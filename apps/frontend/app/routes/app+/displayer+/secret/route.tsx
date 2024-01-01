@@ -84,12 +84,12 @@ const PageComponent: FC = () => {
           method: "GET",
         },
       );
-    }, data.expiry * 1000);
+    }, (fetcher.data?.expiry || data.expiry) * 1000);
 
     return () => {
       clearInterval(interval);
     };
-  }, [data.expiry, fetcher.submit]);
+  }, [data.expiry, fetcher.data?.expiry, fetcher.submit]);
 
   return (
     <>
