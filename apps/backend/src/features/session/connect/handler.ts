@@ -29,6 +29,10 @@ export const Handler: MyRoute<Interface> =
         agent,
         sessionId: session,
       },
+      select: {
+        id: true,
+        sessionId: true,
+      }
     });
 
     const payload: Static<typeof PlaylinkSessionSchema> = {

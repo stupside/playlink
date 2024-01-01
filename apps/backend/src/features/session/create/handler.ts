@@ -11,8 +11,12 @@ import sse from "../../hook/sse";
 import secret from "../secret";
 
 export const Handler: MyRoute<Interface> = () => async (request, response) => {
+
   const session = await prisma.session.create({
     data: {},
+    select: {
+      id: true,
+    }
   });
 
   const device = await prisma.device.create({
@@ -21,6 +25,9 @@ export const Handler: MyRoute<Interface> = () => async (request, response) => {
       agent: request.body.agent ?? request.headers["user-agent"],
       sessionId: session.id,
     },
+    select: {
+      id: true,
+    }
   });
 
   const payload: Static<typeof PlaylinkSessionSchema> = {

@@ -17,6 +17,11 @@ export const Handler: MyRoute<Interface> =
         sessionId: identity.session,
         subtype: request.body.subtype,
       },
+      select: {
+        id: true,
+        type: true,
+        value: true,
+      }
     });
 
     await dispatch(fastify, identity.session, {

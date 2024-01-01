@@ -18,6 +18,10 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
     {
       body: {
         key,
+        device: {
+          ip: undefined,
+          agent: request.headers.get("user-agent") ?? undefined,
+        }
       },
     },
   );
