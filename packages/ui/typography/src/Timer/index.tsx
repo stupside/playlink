@@ -2,12 +2,11 @@ import { type FC, useState, useEffect } from "react";
 
 const ONE_SEC_IN_MS = 1000;
 
-const Timer: FC<{ expiry?: number }> = ({ expiry }) => {
-  const [remaining, setRemaining] = useState<number>(0);
-
-  useEffect(() => {
-    setRemaining(expiry ?? 0);
-  }, [expiry]);
+const Timer: FC<{ expiry?: number; children: FC<{ remaining: number }> }> = ({
+  expiry,
+  children,
+}) => {
+  const [remaining, setRemaining] = useState<number>(expiry ?? 0);
 
   useEffect(() => {
     if (!expiry) return;
@@ -32,13 +31,7 @@ const Timer: FC<{ expiry?: number }> = ({ expiry }) => {
     };
   }, [expiry]);
 
-  return remaining ? (
-    <p className="font-bold text-lg">
-      Expiring in <span className="font-mono">{remaining}</span> sec
-    </p>
-  ) : (
-    <p className="font-bold text-lg">Expired</p>
-  );
+  return children({ remaining });
 };
 
 export default Timer;

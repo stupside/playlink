@@ -10,13 +10,13 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@playlink/ui-zxing": "workspace:^",
-    "@playlink/ui-navigation": "workspace:^",
-    "@playlink/ui-typography": "workspace:^",
-    "@playlink/ui-interactible": "workspace:^",
+    "@heroicons/react": "^2.1.1",
     "@playlink/ui-content-video": "workspace:^",
     "@playlink/ui-content-video-hls": "workspace:^",
-    "@heroicons/react": "^2.1.1",
+    "@playlink/ui-interactible": "workspace:^",
+    "@playlink/ui-navigation": "workspace:^",
+    "@playlink/ui-typography": "workspace:^",
+    "@playlink/ui-zxing": "workspace:^",
     "@remix-run/node": "^2.4.1",
     "@remix-run/react": "^2.4.1",
     "@remix-run/serve": "^2.4.1",

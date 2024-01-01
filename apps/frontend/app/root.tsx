@@ -1,26 +1,10 @@
 import { useEffect } from "react";
 
-import {
-  Links,
-  LiveReload,
-  Meta,
-  Outlet,
-  Scripts,
-  useLoaderData,
-} from "@remix-run/react";
+import { Links, LiveReload, Meta, Outlet, Scripts } from "@remix-run/react";
 
-import {
-  json,
-  type LoaderFunctionArgs,
-  type LinksFunction,
-  type MetaFunction,
-} from "@remix-run/node";
-
-import { UAParser, type IResult } from "ua-parser-js";
+import { type LinksFunction, type MetaFunction } from "@remix-run/node";
 
 import { initFocusables } from "@playlink/ui-navigation";
-
-import UserAgentContext from "./client/components/features/UserAgent";
 
 import styles from "./tailwind.css";
 
@@ -55,21 +39,7 @@ export const meta: MetaFunction = () => {
 
 export const links: LinksFunction = () => [{ rel: "stylesheet", href: styles }];
 
-export const loader = async ({ request }: LoaderFunctionArgs) => {
-  const agent = request.headers.get("user-agent");
-
-  return json({
-    context: agent ? new UAParser(agent).getResult() : undefined,
-    navigation: {
-      debug: Boolean(process.env.PLAYLINK_NAVIGATION_DEBUG),
-      visual: Boolean(process.env.PLAYLINK_NAVIGATION_VISUAL_DEBUG),
-    },
-  });
-};
-
 const App = () => {
-  const { context } = useLoaderData<typeof loader>();
-
   useEffect(() => {
     initFocusables({
       // debug: navigation.debug,
@@ -88,11 +58,9 @@ const App = () => {
         <link rel="icon" type="image/x-icon" href="/favicon.ico" />
       </head>
       <body className="flex h-screen w-full overflow-x-hidden text-zinc-200 bg-zinc-800">
-        <UserAgentContext.Provider value={context as IResult | undefined}>
-          <Outlet />
-          <Scripts />
-          <LiveReload />
-        </UserAgentContext.Provider>
+        <Outlet />
+        <Scripts />
+        <LiveReload />
       </body>
     </html>
   );
