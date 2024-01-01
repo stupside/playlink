@@ -7,11 +7,7 @@ import storage from "~/server/storage/session.server";
 import { apiClient } from "~/server/api.server";
 
 const Loader = Type.Object({
-  type: Type.Enum({
-    text: "TEXT",
-    video: "VIDEO",
-    image: "IMAGE",
-  }),
+  type: Type.String(),
   value: Type.String(),
   subtype: Type.String(),
 });

@@ -14,7 +14,7 @@ export interface paths {
             /** @description The value of the content. */
             value: string;
             /** @description The type of the content. */
-            type: "TEXT" | "IMAGE" | "VIDEO";
+            type: string;
             /** @description The subtype of the content. */
             subtype: string;
           };
