@@ -81,7 +81,7 @@ const PageComponent: FC = () => {
       fetcher.submit(
         {},
         {
-          method: "POST",
+          method: "GET",
         },
       );
     }, data.expiry * 1000);
